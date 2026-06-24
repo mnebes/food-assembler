@@ -13,7 +13,7 @@ See [`DESIGN.md`](./DESIGN.md) for rationale.
 ## Phase 1 — Domain model & utilities
 - [ ] Create `src/types.ts` (MenuItem, RestaurantConfig, MenuResult, RawData, Crawler, HqLocation, DistanceCategory)
 - [ ] Add `distances: Record<HqLocation, DistanceCategory>` to RestaurantConfig
-- [ ] Create `src/hq.ts` (HQ ids + display names + playful wording per distance category)
+- [ ] Create `src/hq.ts` (HQ ids `com-west`/`westpark`, display names **com.West**/**Westpark**, playful wording per distance category)
 - [ ] Create `src/util/date.ts` (Europe/Zurich date + "today" YYYY-MM-DD)
 - [ ] Create `src/util/concurrency.ts` (run N crawlers with limited concurrency)
 - [ ] Add unit tests for date + concurrency helpers
@@ -47,7 +47,7 @@ See [`DESIGN.md`](./DESIGN.md) for rationale.
 - [ ] Implement **ZHdK Toni-Areal** crawler + fixture test (+ `distances` map)
 - [ ] Implement **ZFV Technopark** crawler + fixture test (+ `distances` map)
 - [ ] Confirm each is registered and resilient to layout changes/failures
-- [ ] Set real HQ names + actual distance categories for all restaurants
+- [ ] Set actual distance categories for all restaurants (HQs: com.West, Westpark)
 
 ## Phase 6 — CLI entry
 - [ ] Implement `src/index.ts` (`bun run build`) running the full pipeline

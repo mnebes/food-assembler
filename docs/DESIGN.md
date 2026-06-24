@@ -84,7 +84,7 @@ the summary can surface later in playful wording.
 type Language = 'de' | 'en' | 'unknown';
 
 // The two HQ locations. Extend this union if more sites are added.
-type HqLocation = 'hq-a' | 'hq-b';
+type HqLocation = 'com-west' | 'westpark';
 
 // How far a restaurant is from a given HQ. Ordered near -> far.
 type DistanceCategory = 'near' | 'medium' | 'far';
@@ -182,9 +182,10 @@ Output is overwritten on every run (today-only, no history).
 - Restaurant registry lives in code (`src/restaurants/registry.ts`) for type safety,
   importing each crawler. Per-restaurant static metadata (name/url/location and the
   `distances` map) lives in the crawler module next to its logic.
-- The two HQ locations are defined centrally (`src/hq.ts`): their ids (`hq-a`, `hq-b`),
-  display names, and the playful wording for each `DistanceCategory`. This keeps the
-  HQ set and distance vocabulary in one place and decoupled from individual restaurants.
+- The two HQ locations are defined centrally (`src/hq.ts`): their ids (`com-west`,
+  `westpark`), display names (**com.West**, **Westpark**), and the playful wording for
+  each `DistanceCategory`. This keeps the HQ set and distance vocabulary in one place
+  and decoupled from individual restaurants.
 - Type safety guarantees every restaurant provides a distance for **every** HQ.
 
 ## 11. Initial Restaurants (v1)
