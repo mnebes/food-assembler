@@ -37,10 +37,10 @@ See [`DESIGN.md`](./DESIGN.md) for rationale.
 - [x] Unit-test renderers against a fixture `RawData`
 
 ## Phase 4 — Restaurant registry & first crawler
-- [ ] Create `src/restaurants/registry.ts` (array of active crawlers)
-- [ ] Implement first crawler end-to-end (e.g. **Westhive Hardturm**), incl. its `distances` map
-- [ ] Save an HTML fixture + write a parser test for it
-- [ ] Verify full pipeline locally produces `index.html` + `data.json`
+- [x] Create `src/restaurants/registry.ts` (array of active crawlers)
+- [x] Implement first crawler end-to-end (e.g. **Westhive Hardturm**), incl. its `distances` map
+- [x] Save an HTML fixture + write a parser test for it
+- [x] Verify full pipeline locally produces `index.html` + `data.json`
 
 ## Phase 5 — Remaining v1 crawlers
 - [ ] Implement **Roots Kitchen** crawler + fixture test (+ `distances` map)
