@@ -10,11 +10,18 @@ Every morning an automated job crawls the websites of configured restaurants, ex
 the dishes available **that day**, builds a human-readable summary page, and publishes
 both the summary and the raw data to GitHub Pages.
 
+The two HQ locations are close together, so **every restaurant is relevant to both**.
+They differ only in *how far you have to walk* from each HQ. Each restaurant therefore
+carries a **distance category per HQ location** (e.g. `near` / `medium` / `far`), which
+the summary can surface later in playful wording.
+
 ## 2. Goals & Non-Goals
 
 ### Goals
 - Daily automated crawl of a configurable set of nearby restaurants.
 - Per-restaurant crawler implementations (most sites need a real browser to render).
+- Per-restaurant, **per-HQ distance category** so each location knows how far each
+  restaurant is.
 - A static summary page deployed to GitHub Pages.
 - Raw machine-readable JSON exposed alongside the page.
 - Resilient: one restaurant failing must not break the others.
@@ -76,6 +83,12 @@ both the summary and the raw data to GitHub Pages.
 ```ts
 type Language = 'de' | 'en' | 'unknown';
 
+// The two HQ locations. Extend this union if more sites are added.
+type HqLocation = 'hq-a' | 'hq-b';
+
+// How far a restaurant is from a given HQ. Ordered near -> far.
+type DistanceCategory = 'near' | 'medium' | 'far';
+
 interface MenuItem {
   name: string;            // dish name, source text as-is
   description?: string;    // optional longer text
@@ -88,7 +101,9 @@ interface RestaurantConfig {
   id: string;              // stable slug, e.g. "westhive-hardturm"
   name: string;            // display name
   url: string;             // page to crawl
-  location?: string;       // which HQ it's near / address hint
+  location?: string;       // address hint / human-readable location
+  // Distance category from each HQ. Every HQ should have an entry.
+  distances: Record<HqLocation, DistanceCategory>;
 }
 
 type CrawlStatus = 'ok' | 'no-menu' | 'error';
@@ -143,6 +158,9 @@ Generated into `./public` (the GitHub Pages publish directory):
 - **`index.html`** — static summary page:
   - Header with the date (Europe/Zurich) and "last updated" time.
   - One card/section per restaurant, in registry order.
+  - Each restaurant shows its **distance from both HQs**, rendered in playful wording
+    (e.g. near = "around the corner", medium = "a nice stroll", far = "a proper hike"),
+    with both HQ labels visible.
   - Each dish shows name, optional description/price, and a small language badge
     (e.g. `DE`) since output is English-only but source text is shown as-is.
   - Clear visual state for "unavailable today" / "no menu today".
@@ -162,8 +180,12 @@ Output is overwritten on every run (today-only, no history).
 ## 10. Configuration
 
 - Restaurant registry lives in code (`src/restaurants/registry.ts`) for type safety,
-  importing each crawler. Per-restaurant static metadata (name/url/location) lives in the
-  crawler module next to its logic.
+  importing each crawler. Per-restaurant static metadata (name/url/location and the
+  `distances` map) lives in the crawler module next to its logic.
+- The two HQ locations are defined centrally (`src/hq.ts`): their ids (`hq-a`, `hq-b`),
+  display names, and the playful wording for each `DistanceCategory`. This keeps the
+  HQ set and distance vocabulary in one place and decoupled from individual restaurants.
+- Type safety guarantees every restaurant provides a distance for **every** HQ.
 
 ## 11. Initial Restaurants (v1)
 
@@ -196,6 +218,7 @@ food-assembler/
 ├─ src/
 │  ├─ index.ts                 # CLI entry: runs the build
 │  ├─ types.ts                 # domain model
+│  ├─ hq.ts                    # HQ locations + distance wording
 │  ├─ orchestrator.ts          # browser lifecycle + run crawlers
 │  ├─ restaurants/
 │  │  ├─ registry.ts           # list of active crawlers

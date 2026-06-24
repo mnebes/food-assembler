@@ -11,7 +11,9 @@ See [`DESIGN.md`](./DESIGN.md) for rationale.
 - [ ] Add `cheerio` (optional) for ergonomic DOM parsing
 
 ## Phase 1 — Domain model & utilities
-- [ ] Create `src/types.ts` (MenuItem, RestaurantConfig, MenuResult, RawData, Crawler)
+- [ ] Create `src/types.ts` (MenuItem, RestaurantConfig, MenuResult, RawData, Crawler, HqLocation, DistanceCategory)
+- [ ] Add `distances: Record<HqLocation, DistanceCategory>` to RestaurantConfig
+- [ ] Create `src/hq.ts` (HQ ids + display names + playful wording per distance category)
 - [ ] Create `src/util/date.ts` (Europe/Zurich date + "today" YYYY-MM-DD)
 - [ ] Create `src/util/concurrency.ts` (run N crawlers with limited concurrency)
 - [ ] Add unit tests for date + concurrency helpers
@@ -29,21 +31,23 @@ See [`DESIGN.md`](./DESIGN.md) for rationale.
 - [ ] Implement `src/render/html.ts` → writes `public/index.html`
 - [ ] Add minimal `public/styles.css` (mobile-friendly, no framework)
 - [ ] Show per-restaurant states: menu / "no menu today" / "unavailable today"
+- [ ] Show each restaurant's distance from both HQs in playful wording (both labels visible)
 - [ ] Show language badge per item; header shows date + last-updated time
 - [ ] Add `public/.nojekyll`
 - [ ] Unit-test renderers against a fixture `RawData`
 
 ## Phase 4 — Restaurant registry & first crawler
 - [ ] Create `src/restaurants/registry.ts` (array of active crawlers)
-- [ ] Implement first crawler end-to-end (e.g. **Westhive Hardturm**)
+- [ ] Implement first crawler end-to-end (e.g. **Westhive Hardturm**), incl. its `distances` map
 - [ ] Save an HTML fixture + write a parser test for it
 - [ ] Verify full pipeline locally produces `index.html` + `data.json`
 
 ## Phase 5 — Remaining v1 crawlers
-- [ ] Implement **Roots Kitchen** crawler + fixture test
-- [ ] Implement **ZHdK Toni-Areal** crawler + fixture test
-- [ ] Implement **ZFV Technopark** crawler + fixture test
+- [ ] Implement **Roots Kitchen** crawler + fixture test (+ `distances` map)
+- [ ] Implement **ZHdK Toni-Areal** crawler + fixture test (+ `distances` map)
+- [ ] Implement **ZFV Technopark** crawler + fixture test (+ `distances` map)
 - [ ] Confirm each is registered and resilient to layout changes/failures
+- [ ] Set real HQ names + actual distance categories for all restaurants
 
 ## Phase 6 — CLI entry
 - [ ] Implement `src/index.ts` (`bun run build`) running the full pipeline
