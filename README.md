@@ -13,3 +13,26 @@ example lunch locations:
 - https://rootsandfriends.com/en/food/RootsKitchen/
 - https://www.zhdk.ch/campustoniareal/gastronomie
 - https://www.zfv.ch/de/essen-gehen/gastronomie-im-technopark-zuerich#menu
+
+## Development
+
+Built with **TypeScript on [Bun](https://bun.com)** and **[Playwright](https://playwright.dev)** (headless Chromium) for crawling.
+
+See [`docs/DESIGN.md`](docs/DESIGN.md) for the architecture and [`docs/IMPLEMENTATION_PLAN.md`](docs/IMPLEMENTATION_PLAN.md) for progress.
+
+### Setup
+
+```sh
+bun install                  # install dependencies
+bunx playwright install chromium   # install the headless browser
+```
+
+### Scripts
+
+| Command           | Description                                  |
+| ----------------- | -------------------------------------------- |
+| `bun run build`   | Run the full crawl + render pipeline         |
+| `bun run crawl`   | Crawl a single restaurant (debug)            |
+| `bun run dev`     | Re-run the build on file changes             |
+| `bun test`        | Run the test suite                           |
+

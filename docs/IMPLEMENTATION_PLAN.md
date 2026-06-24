@@ -4,11 +4,11 @@ Work through these phases top-to-bottom. Each item is independently checkable.
 See [`DESIGN.md`](./DESIGN.md) for rationale.
 
 ## Phase 0 — Project scaffolding
-- [ ] Initialize Bun + TypeScript project (`bun init`, `package.json`, `tsconfig.json`)
-- [ ] Add `.gitignore` (node_modules, `public/` output, Playwright caches)
-- [ ] Add Playwright as a dependency and document Chromium install
-- [ ] Define npm/bun scripts: `build`, `test`, `crawl` (single restaurant), `dev`
-- [ ] Add `cheerio` (optional) for ergonomic DOM parsing
+- [x] Initialize Bun + TypeScript project (`bun init`, `package.json`, `tsconfig.json`)
+- [x] Add `.gitignore` (node_modules, `public/` output, Playwright caches)
+- [x] Add Playwright as a dependency and document Chromium install
+- [x] Define npm/bun scripts: `build`, `test`, `crawl` (single restaurant), `dev`
+- [x] Add `cheerio` (optional) for ergonomic DOM parsing
 
 ## Phase 1 — Domain model & utilities
 - [ ] Create `src/types.ts` (MenuItem, RestaurantConfig, MenuResult, RawData, Crawler, HqLocation, DistanceCategory)
