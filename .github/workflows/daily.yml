@@ -1,0 +1,61 @@
+name: Daily menu build
+
+# The build runs every weekday morning and publishes the result to GitHub Pages.
+#
+# Scheduling note (UTC ↔ Europe/Zurich):
+#   GitHub Actions cron is always in UTC. Zurich is UTC+1 (CET) in winter and
+#   UTC+2 (CEST, last Sun Mar – last Sun Oct) in summer. We run at 05:00 UTC,
+#   which is 06:00 local in winter and 07:00 local in summer — early enough that
+#   the page is ready before lunch year-round. Restaurants are crawled Mon–Fri
+#   only (lunch menus aren't published on weekends).
+on:
+  schedule:
+    - cron: '0 5 * * 1-5'
+  workflow_dispatch:
+
+# Allow the workflow to publish to GitHub Pages.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Only one Pages deployment at a time; let an in-progress run finish.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Install Playwright Chromium
+        run: bunx playwright install --with-deps chromium
+
+      - name: Build site
+        run: bun run build
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./public
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

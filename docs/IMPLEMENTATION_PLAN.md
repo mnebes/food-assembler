@@ -55,11 +55,11 @@ See [`DESIGN.md`](./DESIGN.md) for rationale.
 - [x] Log a concise per-restaurant status summary at the end of a run
 
 ## Phase 7 — CI/CD & GitHub Pages
-- [ ] Add `.github/workflows/daily.yml` with `schedule` (morning, Europe/Zurich) + `workflow_dispatch`
-- [ ] Steps: checkout → setup Bun → `bun install` → install Playwright Chromium → `bun run build`
-- [ ] Upload `./public` as a Pages artifact and deploy
-- [ ] Enable GitHub Pages for the repo and verify a successful published run
-- [ ] Document the cron UTC↔CET offset in the workflow
+- [x] Add `.github/workflows/daily.yml` with `schedule` (morning, Europe/Zurich) + `workflow_dispatch`
+- [x] Steps: checkout → setup Bun → `bun install` → install Playwright Chromium → `bun run build`
+- [x] Upload `./public` as a Pages artifact and deploy
+- [x] Enable GitHub Pages for the repo and verify a successful published run
+- [x] Document the cron UTC↔CET offset in the workflow
 
 ## Phase 8 — Docs & polish
 - [ ] Update `README.md` with setup, local run, and "how to add a restaurant" guide

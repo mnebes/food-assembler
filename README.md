@@ -36,3 +36,13 @@ bunx playwright install chromium   # install the headless browser
 | `bun run dev`     | Re-run the build on file changes             |
 | `bun test`        | Run the test suite                           |
 
+### Deployment
+
+A scheduled GitHub Actions workflow ([`.github/workflows/daily.yml`](.github/workflows/daily.yml))
+runs every weekday morning (05:00 UTC ≈ 06:00–07:00 Europe/Zurich) and can also
+be triggered manually via **workflow_dispatch**. It installs Bun + headless
+Chromium, runs `bun run build`, and deploys the generated `./public` directory to
+GitHub Pages. Enable Pages for the repository (Settings → Pages → Source:
+*GitHub Actions*) to publish; this requires a plan that supports Pages for the
+repo's visibility.
+
