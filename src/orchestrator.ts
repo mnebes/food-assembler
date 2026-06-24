@@ -15,10 +15,22 @@ export interface OrchestratorOptions {
 const DEFAULT_CONCURRENCY = 3;
 const DEFAULT_TIMEOUT_MS = 45_000;
 
-function timeout(ms: number): Promise<never> {
-  return new Promise((_, reject) =>
-    setTimeout(() => reject(new Error(`Crawl timed out after ${ms}ms`)), ms),
-  );
+interface Timeout {
+  /** Rejects once the deadline passes. */
+  promise: Promise<never>;
+  /** Cancels the pending timer so it can't keep the event loop alive. */
+  cancel: () => void;
+}
+
+function timeout(ms: number): Timeout {
+  let handle: ReturnType<typeof setTimeout>;
+  const promise = new Promise<never>((_, reject) => {
+    handle = setTimeout(
+      () => reject(new Error(`Crawl timed out after ${ms}ms`)),
+      ms,
+    );
+  });
+  return { promise, cancel: () => clearTimeout(handle) };
 }
 
 /**
@@ -33,10 +45,11 @@ async function runCrawler(
 ): Promise<MenuResult> {
   const crawledAt = new Date().toISOString();
   let context: BrowserContext | undefined;
+  const deadline = timeout(timeoutMs);
   try {
     context = await browser.newContext();
     const page = await context.newPage();
-    const items = await Promise.race([crawler.crawl(page), timeout(timeoutMs)]);
+    const items = await Promise.race([crawler.crawl(page), deadline.promise]);
 
     if (items.length === 0) {
       return { restaurant: crawler.config, status: 'no-menu', items: [], crawledAt };
@@ -51,6 +64,7 @@ async function runCrawler(
       crawledAt,
     };
   } finally {
+    deadline.cancel();
     await context?.close().catch(() => {});
   }
 }
