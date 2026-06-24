@@ -11,12 +11,12 @@ See [`DESIGN.md`](./DESIGN.md) for rationale.
 - [x] Add `cheerio` (optional) for ergonomic DOM parsing
 
 ## Phase 1 — Domain model & utilities
-- [ ] Create `src/types.ts` (MenuItem, RestaurantConfig, MenuResult, RawData, Crawler, HqLocation, DistanceCategory)
-- [ ] Add `distances: Record<HqLocation, DistanceCategory>` to RestaurantConfig
-- [ ] Create `src/hq.ts` (HQ ids `com-west`/`westpark`, display names **com.West**/**Westpark**, playful wording per distance category)
-- [ ] Create `src/util/date.ts` (Europe/Zurich date + "today" YYYY-MM-DD)
-- [ ] Create `src/util/concurrency.ts` (run N crawlers with limited concurrency)
-- [ ] Add unit tests for date + concurrency helpers
+- [x] Create `src/types.ts` (MenuItem, RestaurantConfig, MenuResult, RawData, Crawler, HqLocation, DistanceCategory)
+- [x] Add `distances: Record<HqLocation, DistanceCategory>` to RestaurantConfig
+- [x] Create `src/hq.ts` (HQ ids `com-west`/`westpark`, display names **com.West**/**Westpark**, playful wording per distance category)
+- [x] Create `src/util/date.ts` (Europe/Zurich date + "today" YYYY-MM-DD)
+- [x] Create `src/util/concurrency.ts` (run N crawlers with limited concurrency)
+- [x] Add unit tests for date + concurrency helpers
 
 ## Phase 2 — Orchestrator
 - [ ] Implement shared Playwright browser launch/teardown
