@@ -1,24 +1,37 @@
 import { assembleMenus } from './orchestrator.ts';
 import { writeSite } from './render/index.ts';
 import { crawlers } from './restaurants/registry.ts';
-import type { Crawler } from './types.ts';
+import type { CrawlStatus, Crawler, MenuResult } from './types.ts';
 
 const OUT_DIR = 'public';
 
-function statusLine(id: string, status: string, count: number): string {
-  const icon = status === 'ok' ? '✅' : status === 'no-menu' ? '➖' : '❌';
-  const detail = status === 'ok' ? `${count} item(s)` : status;
-  return `  ${icon} ${id} — ${detail}`;
+function statusIcon(status: CrawlStatus): string {
+  return status === 'ok' ? '✅' : status === 'no-menu' ? '➖' : '❌';
+}
+
+function statusLine(result: MenuResult): string {
+  const { restaurant, status, items } = result;
+  const detail = status === 'ok' ? `${items.length} item(s)` : status;
+  return `  ${statusIcon(status)} ${restaurant.id} — ${detail}`;
+}
+
+function summaryLine(results: readonly MenuResult[]): string {
+  const count = (status: CrawlStatus) =>
+    results.filter((r) => r.status === status).length;
+  return `[food-assembler] summary: ${count('ok')} ok, ${count('no-menu')} no-menu, ${count('error')} error (of ${results.length})`;
 }
 
 async function build(): Promise<void> {
   console.log(`[food-assembler] crawling ${crawlers.length} restaurant(s)...`);
   const data = await assembleMenus(crawlers);
-  for (const r of data.results) {
-    console.log(statusLine(r.restaurant.id, r.status, r.items.length));
-  }
+
   await writeSite(data, OUT_DIR);
   console.log(`[food-assembler] wrote ${OUT_DIR}/index.html and ${OUT_DIR}/data.json`);
+
+  for (const result of data.results) {
+    console.log(statusLine(result));
+  }
+  console.log(summaryLine(data.results));
 }
 
 async function crawlOne(id: string): Promise<void> {

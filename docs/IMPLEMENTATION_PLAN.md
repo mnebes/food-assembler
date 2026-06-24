@@ -50,9 +50,9 @@ See [`DESIGN.md`](./DESIGN.md) for rationale.
 - [x] Set actual distance categories for all restaurants (HQs: com.West, Westpark)
 
 ## Phase 6 — CLI entry
-- [ ] Implement `src/index.ts` (`bun run build`) running the full pipeline
-- [ ] Add a single-restaurant debug mode (`crawl <id>`) printing JSON to stdout
-- [ ] Log a concise per-restaurant status summary at the end of a run
+- [x] Implement `src/index.ts` (`bun run build`) running the full pipeline
+- [x] Add a single-restaurant debug mode (`crawl <id>`) printing JSON to stdout
+- [x] Log a concise per-restaurant status summary at the end of a run
 
 ## Phase 7 — CI/CD & GitHub Pages
 - [ ] Add `.github/workflows/daily.yml` with `schedule` (morning, Europe/Zurich) + `workflow_dispatch`
