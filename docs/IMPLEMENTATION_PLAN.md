@@ -19,22 +19,22 @@ See [`DESIGN.md`](./DESIGN.md) for rationale.
 - [x] Add unit tests for date + concurrency helpers
 
 ## Phase 2 — Orchestrator
-- [ ] Implement shared Playwright browser launch/teardown
-- [ ] Run each crawler with a fresh context/page and a per-restaurant timeout
-- [ ] Wrap each crawl in try/catch → produce `MenuResult` with `ok | no-menu | error`
-- [ ] Treat empty `ok` results as `no-menu`
-- [ ] Assemble `RawData` (today only) from all results
-- [ ] Ensure the pipeline never throws even if every crawler fails
+- [x] Implement shared Playwright browser launch/teardown
+- [x] Run each crawler with a fresh context/page and a per-restaurant timeout
+- [x] Wrap each crawl in try/catch → produce `MenuResult` with `ok | no-menu | error`
+- [x] Treat empty `ok` results as `no-menu`
+- [x] Assemble `RawData` (today only) from all results
+- [x] Ensure the pipeline never throws even if every crawler fails
 
 ## Phase 3 — Renderers
-- [ ] Implement `src/render/json.ts` → writes `public/data.json`
-- [ ] Implement `src/render/html.ts` → writes `public/index.html`
-- [ ] Add minimal `public/styles.css` (mobile-friendly, no framework)
-- [ ] Show per-restaurant states: menu / "no menu today" / "unavailable today"
-- [ ] Show each restaurant's distance from both HQs in playful wording (both labels visible)
-- [ ] Show language badge per item; header shows date + last-updated time
-- [ ] Add `public/.nojekyll`
-- [ ] Unit-test renderers against a fixture `RawData`
+- [x] Implement `src/render/json.ts` → writes `public/data.json`
+- [x] Implement `src/render/html.ts` → writes `public/index.html`
+- [x] Add minimal `public/styles.css` (mobile-friendly, no framework)
+- [x] Show per-restaurant states: menu / "no menu today" / "unavailable today"
+- [x] Show each restaurant's distance from both HQs in playful wording (both labels visible)
+- [x] Show language badge per item; header shows date + last-updated time
+- [x] Add `public/.nojekyll`
+- [x] Unit-test renderers against a fixture `RawData`
 
 ## Phase 4 — Restaurant registry & first crawler
 - [ ] Create `src/restaurants/registry.ts` (array of active crawlers)

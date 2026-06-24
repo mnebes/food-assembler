@@ -1,0 +1,179 @@
+:root {
+  --bg: #f7f5f1;
+  --card: #ffffff;
+  --ink: #1f2421;
+  --muted: #6b7280;
+  --accent: #2f7d5b;
+  --error: #b04141;
+  --border: #e5e1d8;
+  --radius: 12px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  line-height: 1.5;
+}
+
+main {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 1.5rem 1rem 3rem;
+}
+
+.page-head {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.page-head h1 {
+  margin: 0 0 0.25rem;
+  font-size: 1.9rem;
+}
+
+.page-head .date {
+  margin: 0;
+  font-size: 1.1rem;
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.page-head .updated {
+  margin: 0.25rem 0 0;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.restaurant {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.restaurant-head h2 {
+  margin: 0 0 0.4rem;
+  font-size: 1.25rem;
+}
+
+.restaurant-head h2 a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.restaurant-head h2 a:hover {
+  text-decoration: underline;
+}
+
+.distances {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 0.75rem;
+  margin-bottom: 0.75rem;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.distance .hq {
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.items {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.item {
+  padding: 0.6rem 0;
+  border-top: 1px solid var(--border);
+}
+
+.item:first-child {
+  border-top: none;
+}
+
+.item-head {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.item-name {
+  font-weight: 600;
+}
+
+.lang-badge {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  background: var(--border);
+  color: var(--muted);
+  border-radius: 4px;
+  padding: 0.05rem 0.3rem;
+}
+
+.item-desc {
+  margin: 0.2rem 0 0;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.item-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.3rem;
+  align-items: center;
+}
+
+.item-price {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.item-tag {
+  font-size: 0.7rem;
+  background: #eef5f1;
+  color: var(--accent);
+  border-radius: 4px;
+  padding: 0.05rem 0.35rem;
+}
+
+.note {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.note-no-menu {
+  color: var(--muted);
+}
+
+.note-error {
+  color: var(--error);
+}
+
+.restaurant-error {
+  border-color: #e7c9c9;
+}
+
+.page-foot {
+  margin-top: 2rem;
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.page-foot a,
+.note a {
+  color: var(--accent);
+}

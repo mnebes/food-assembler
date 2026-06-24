@@ -1,0 +1,83 @@
+import { expect, test, describe } from 'bun:test';
+import type { Browser } from 'playwright';
+import { assembleMenus } from '../src/orchestrator.ts';
+import type { Crawler, MenuItem, RestaurantConfig } from '../src/types.ts';
+
+function makeConfig(id: string): RestaurantConfig {
+  return {
+    id,
+    name: id,
+    url: `https://example.com/${id}`,
+    distances: { 'com-west': 'near', westpark: 'far' },
+  };
+}
+
+/** A fake Playwright browser that hands out throwaway contexts/pages. */
+function fakeBrowser(): Browser {
+  const page = {} as never;
+  const context = {
+    newPage: async () => page,
+    close: async () => {},
+  };
+  return {
+    newContext: async () => context,
+    close: async () => {},
+  } as unknown as Browser;
+}
+
+function crawler(id: string, crawl: () => Promise<MenuItem[]>): Crawler {
+  return { config: makeConfig(id), crawl };
+}
+
+describe('assembleMenus', () => {
+  test("status 'ok' when items are returned", async () => {
+    const crawlers = [
+      crawler('a', async () => [{ name: 'Pasta', language: 'en' }]),
+    ];
+    const data = await assembleMenus(crawlers, { browser: fakeBrowser() });
+    expect(data.results[0]!.status).toBe('ok');
+    expect(data.results[0]!.items).toHaveLength(1);
+  });
+
+  test("empty successful crawl is normalized to 'no-menu'", async () => {
+    const crawlers = [crawler('a', async () => [])];
+    const data = await assembleMenus(crawlers, { browser: fakeBrowser() });
+    expect(data.results[0]!.status).toBe('no-menu');
+  });
+
+  test("a throwing crawler yields status 'error' and does not break others", async () => {
+    const crawlers = [
+      crawler('boom', async () => {
+        throw new Error('site down');
+      }),
+      crawler('ok', async () => [{ name: 'Salad', language: 'en' }]),
+    ];
+    const data = await assembleMenus(crawlers, { browser: fakeBrowser() });
+    expect(data.results[0]!.status).toBe('error');
+    expect(data.results[0]!.error).toBe('site down');
+    expect(data.results[1]!.status).toBe('ok');
+  });
+
+  test('a slow crawler times out and is reported as error', async () => {
+    const crawlers = [
+      crawler('slow', () => new Promise(() => {})), // never resolves
+    ];
+    const data = await assembleMenus(crawlers, {
+      browser: fakeBrowser(),
+      timeoutMs: 20,
+    });
+    expect(data.results[0]!.status).toBe('error');
+    expect(data.results[0]!.error).toContain('timed out');
+  });
+
+  test('results preserve crawler order and include date metadata', async () => {
+    const crawlers = [
+      crawler('first', async () => [{ name: 'A', language: 'en' }]),
+      crawler('second', async () => [{ name: 'B', language: 'en' }]),
+    ];
+    const data = await assembleMenus(crawlers, { browser: fakeBrowser() });
+    expect(data.results.map((r) => r.restaurant.id)).toEqual(['first', 'second']);
+    expect(data.date).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+    expect(data.generatedAt).toMatch(/^\d{4}-\d{2}-\d{2}T/);
+  });
+});
