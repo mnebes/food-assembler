@@ -43,11 +43,11 @@ See [`DESIGN.md`](./DESIGN.md) for rationale.
 - [x] Verify full pipeline locally produces `index.html` + `data.json`
 
 ## Phase 5 — Remaining v1 crawlers
-- [ ] Implement **Roots Kitchen** crawler + fixture test (+ `distances` map)
-- [ ] Implement **ZHdK Toni-Areal** crawler + fixture test (+ `distances` map)
-- [ ] Implement **ZFV Technopark** crawler + fixture test (+ `distances` map)
-- [ ] Confirm each is registered and resilient to layout changes/failures
-- [ ] Set actual distance categories for all restaurants (HQs: com.West, Westpark)
+- [x] Implement **Roots Kitchen** crawler + fixture test (+ `distances` map)
+- [x] Implement **ZHdK Toni-Areal** crawler + fixture test (+ `distances` map)
+- [x] Implement **ZFV Technopark** crawler + fixture test (+ `distances` map)
+- [x] Confirm each is registered and resilient to layout changes/failures
+- [x] Set actual distance categories for all restaurants (HQs: com.West, Westpark)
 
 ## Phase 6 — CLI entry
 - [ ] Implement `src/index.ts` (`bun run build`) running the full pipeline
