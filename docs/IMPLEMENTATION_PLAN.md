@@ -62,10 +62,10 @@ See [`DESIGN.md`](./DESIGN.md) for rationale.
 - [x] Document the cron UTC↔CET offset in the workflow
 
 ## Phase 8 — Docs & polish
-- [ ] Update `README.md` with setup, local run, and "how to add a restaurant" guide
-- [ ] Document the `data.json` schema for downstream consumers
-- [ ] Add a manual smoke-test job/script for detecting site layout drift
-- [ ] Final review against `DESIGN.md` goals
+- [x] Update `README.md` with setup, local run, and "how to add a restaurant" guide
+- [x] Document the `data.json` schema for downstream consumers
+- [x] Add a manual smoke-test job/script for detecting site layout drift
+- [x] Final review against `DESIGN.md` goals
 
 ## Future (post-v1, not scheduled)
 - [ ] Slack/Teams notification or RSS feed

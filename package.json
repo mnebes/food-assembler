@@ -7,6 +7,7 @@
     "build": "bun run src/index.ts build",
     "crawl": "bun run src/index.ts crawl",
     "dev": "bun run --watch src/index.ts build",
+    "smoke": "bun run scripts/smoke.ts",
     "test": "bun test"
   },
   "devDependencies": {

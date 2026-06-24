@@ -1,0 +1,32 @@
+name: Smoke test (layout drift)
+
+# Manual, on-demand check that the live restaurant sites still parse. Run this
+# from the Actions tab when you suspect a site changed its markup. It does not
+# deploy anything — it just crawls and fails if a restaurant returns no menu on
+# a weekday (a strong hint that a crawler needs updating / fixtures refreshing).
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Install Playwright Chromium
+        run: bunx playwright install --with-deps chromium
+
+      - name: Run smoke test
+        run: bun run smoke
