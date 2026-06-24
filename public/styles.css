@@ -1,12 +1,19 @@
 :root {
-  --bg: #f7f5f1;
+  --bg: #fbfbfa;
   --card: #ffffff;
-  --ink: #1f2421;
-  --muted: #6b7280;
-  --accent: #2f7d5b;
-  --error: #b04141;
-  --border: #e5e1d8;
-  --radius: 12px;
+  --ink: #14181d;
+  --muted: #7a8590;
+  --faint: #aeb6bf;
+  --accent: #1f9b57;
+  --accent-soft: #ebf7f0;
+  --pop: #6c5ce7;
+  --pop-soft: #f0eefc;
+  --error: #d23b2b;
+  --error-soft: #fbeae7;
+  --line: #e7e9ec;
+  --line-strong: #d7dbe0;
+  --mono: ui-monospace, "SFMono-Regular", "JetBrains Mono", "Fira Code", Menlo,
+    Consolas, monospace;
 }
 
 * {
@@ -17,74 +24,257 @@ body {
   margin: 0;
   background: var(--bg);
   color: var(--ink);
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  line-height: 1.5;
+  font-family: var(--mono);
+  font-size: 15px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: var(--pop);
 }
 
 main {
-  max-width: 760px;
+  max-width: 1320px;
   margin: 0 auto;
-  padding: 1.5rem 1rem 3rem;
+  padding: 2rem 1.25rem 3.5rem;
 }
 
+/* ---------- Header ---------- */
+
 .page-head {
-  text-align: center;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.75rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.prompt {
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin: 0 0 0.6rem;
+}
+
+.prompt-sigil {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.cursor {
+  display: inline-block;
+  width: 0.6ch;
+  height: 1.05em;
+  margin-left: 0.1rem;
+  background: var(--accent);
+  vertical-align: text-bottom;
+  animation: blink 1.1s steps(2, start) infinite;
+}
+
+@keyframes blink {
+  to {
+    visibility: hidden;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cursor {
+    animation: none;
+  }
 }
 
 .page-head h1 {
-  margin: 0 0 0.25rem;
-  font-size: 1.9rem;
-}
-
-.page-head .date {
   margin: 0;
-  font-size: 1.1rem;
-  color: var(--accent);
-  font-weight: 600;
+  font-size: clamp(1.7rem, 4vw, 2.4rem);
+  font-weight: 700;
+  letter-spacing: -0.01em;
 }
 
-.page-head .updated {
-  margin: 0.25rem 0 0;
-  font-size: 0.85rem;
+.page-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem 1rem;
+  margin-top: 0.6rem;
+}
+
+.page-meta .date {
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.page-meta .date::before {
+  content: "[ ";
+  color: var(--faint);
+}
+
+.page-meta .date::after {
+  content: " ]";
+  color: var(--faint);
+}
+
+.page-meta .updated {
+  font-size: 0.8rem;
   color: var(--muted);
 }
 
+.stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+  margin: 1rem 0 0;
+}
+
+.stat {
+  display: flex;
+  align-items: baseline;
+  gap: 0.4rem;
+}
+
+.stat dt {
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+.stat dt::after {
+  content: " =";
+  color: var(--faint);
+}
+
+.stat dd {
+  margin: 0;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--ink);
+}
+
+/* ---------- Masonry of restaurants ---------- */
+
+.grid {
+  columns: 330px;
+  column-gap: 1rem;
+}
+
 .restaurant {
+  position: relative;
   background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 1rem 1.25rem;
-  margin-bottom: 1rem;
+  border: 1px solid var(--line-strong);
+  padding: 1rem 1.1rem 1.15rem;
+  margin: 0 0 1rem;
+  break-inside: avoid;
 }
 
-.restaurant-head h2 {
-  margin: 0 0 0.4rem;
-  font-size: 1.25rem;
+/* status marker: a short colour-coded bar, top-left */
+.restaurant::before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  width: 34px;
+  height: 3px;
+  background: var(--accent);
 }
 
-.restaurant-head h2 a {
+.restaurant-ok::before {
+  background: var(--accent);
+}
+.restaurant-no-menu::before {
+  background: var(--faint);
+}
+.restaurant-error::before {
+  background: var(--error);
+}
+
+.restaurant-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  margin-bottom: 0.6rem;
+}
+
+.restaurant-title h2 {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.restaurant-title h2 a {
   color: inherit;
   text-decoration: none;
+  border-bottom: 1px solid transparent;
 }
 
-.restaurant-head h2 a:hover {
-  text-decoration: underline;
+.restaurant-title h2 a:hover {
+  border-bottom-color: var(--accent);
 }
+
+/* ---------- Status badge ---------- */
+
+.status-badge {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.status-dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  background: currentColor;
+}
+
+.status-ok {
+  color: var(--accent);
+}
+.status-no-menu {
+  color: var(--faint);
+}
+.status-error {
+  color: var(--error);
+}
+
+/* ---------- Distances ---------- */
 
 .distances {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.4rem 0.75rem;
-  margin-bottom: 0.75rem;
-  font-size: 0.85rem;
-  color: var(--muted);
+  gap: 0.3rem 0.5rem;
+  margin-bottom: 0.85rem;
+  padding-bottom: 0.85rem;
+  border-bottom: 1px dashed var(--line);
+}
+
+.distance {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.76rem;
+}
+
+.distance-icon {
+  font-size: 0.82rem;
+  line-height: 1;
+  filter: grayscale(0.15);
 }
 
 .distance .hq {
-  font-weight: 600;
-  color: var(--ink);
+  font-weight: 700;
+  color: var(--pop);
 }
+
+.distance .hq::after {
+  content: ":";
+  color: var(--faint);
+}
+
+.distance-word {
+  color: var(--muted);
+}
+
+/* ---------- Items ---------- */
 
 .items {
   list-style: none;
@@ -93,12 +283,13 @@ main {
 }
 
 .item {
-  padding: 0.6rem 0;
-  border-top: 1px solid var(--border);
+  padding: 0.55rem 0;
+  border-top: 1px dashed var(--line);
 }
 
 .item:first-child {
   border-top: none;
+  padding-top: 0;
 }
 
 .item-head {
@@ -112,18 +303,17 @@ main {
 }
 
 .lang-badge {
-  font-size: 0.65rem;
+  font-size: 0.6rem;
   font-weight: 700;
-  letter-spacing: 0.03em;
-  background: var(--border);
+  letter-spacing: 0.04em;
   color: var(--muted);
-  border-radius: 4px;
-  padding: 0.05rem 0.3rem;
+  border: 1px solid var(--line-strong);
+  padding: 0 0.25rem;
 }
 
 .item-desc {
   margin: 0.2rem 0 0;
-  font-size: 0.9rem;
+  font-size: 0.84rem;
   color: var(--muted);
 }
 
@@ -131,27 +321,36 @@ main {
   display: flex;
   flex-wrap: wrap;
   gap: 0.4rem;
-  margin-top: 0.3rem;
+  margin-top: 0.35rem;
   align-items: center;
 }
 
 .item-price {
-  font-size: 0.85rem;
-  font-weight: 600;
+  font-size: 0.82rem;
+  font-weight: 700;
   color: var(--accent);
 }
 
 .item-tag {
   font-size: 0.7rem;
-  background: #eef5f1;
-  color: var(--accent);
-  border-radius: 4px;
-  padding: 0.05rem 0.35rem;
+  color: var(--pop);
 }
 
+.item-tag::before {
+  content: "#";
+  color: var(--faint);
+}
+
+/* ---------- Notes (empty states) ---------- */
+
 .note {
-  margin: 0;
-  font-size: 0.95rem;
+  margin: 0.25rem 0 0;
+  font-size: 0.86rem;
+}
+
+.note-glyph {
+  font-weight: 700;
+  color: var(--faint);
 }
 
 .note-no-menu {
@@ -162,18 +361,25 @@ main {
   color: var(--error);
 }
 
-.restaurant-error {
-  border-color: #e7c9c9;
-}
+/* ---------- Footer ---------- */
 
 .page-foot {
-  margin-top: 2rem;
-  text-align: center;
+  margin-top: 2.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--line);
   font-size: 0.8rem;
   color: var(--muted);
 }
 
-.page-foot a,
-.note a {
+.page-foot code {
   color: var(--accent);
+}
+
+@media (max-width: 480px) {
+  main {
+    padding: 1.5rem 0.9rem 2.5rem;
+  }
+  .grid {
+    columns: 1;
+  }
 }
