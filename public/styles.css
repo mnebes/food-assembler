@@ -46,6 +46,69 @@ main {
   padding: 2rem 1.25rem 3.5rem;
 }
 
+/* ---------- Turtle fact (typed-live garnish) ---------- */
+
+.turtle-fact {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+.turtle-fact-label {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.turtle-fact-label::after {
+  content: " >";
+  color: var(--faint);
+}
+
+.turtle-fact-body {
+  display: inline-flex;
+  align-items: baseline;
+}
+
+.turtle-fact-cursor {
+  display: inline-block;
+  width: 0.5ch;
+  height: 1em;
+  margin-left: 0.15rem;
+  background: var(--accent);
+  vertical-align: text-bottom;
+  animation: blink 1.1s steps(2, start) infinite;
+}
+
+.turtle-fact-source {
+  font-size: 0.74rem;
+  color: var(--pop);
+}
+
+.turtle-fact-source::before {
+  content: "[ ";
+  color: var(--faint);
+}
+
+.turtle-fact-source::after {
+  content: " ]";
+  color: var(--faint);
+}
+
+/* While typing, keep the cursor solid; it blinks once the fact is complete. */
+.turtle-fact.is-typing .turtle-fact-cursor {
+  animation: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .turtle-fact-cursor {
+    animation: none;
+  }
+}
+
 /* ---------- Header ---------- */
 
 .page-head {

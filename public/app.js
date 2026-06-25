@@ -117,3 +117,74 @@
     window.addEventListener('resize', sync);
   });
 })();
+
+// Turtle fact, typed out live. Fetches a random fact from the
+// "Facts-as-a-Service" endpoint and reveals it character by character at the
+// top of the page. Pure garnish and fully optional: the element is rendered
+// hidden server-side and only shown once a fact arrives, so a slow or down
+// service (or no JS) leaves the page untouched.
+(function () {
+  'use strict';
+
+  var box = document.querySelector('.turtle-fact');
+  if (!box) return;
+
+  var url = box.getAttribute('data-facts-url');
+  if (!url) return;
+
+  var textEl = box.querySelector('.turtle-fact-text');
+  if (!textEl) return;
+
+  var sourceEl = box.querySelector('.turtle-fact-source');
+
+  var reduceMotion =
+    window.matchMedia &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function reveal() {
+    box.hidden = false;
+  }
+
+  function showSource(url) {
+    if (!sourceEl || !url) return;
+    sourceEl.setAttribute('href', url);
+    sourceEl.hidden = false;
+  }
+
+  function type(text, source) {
+    reveal();
+    if (reduceMotion) {
+      textEl.textContent = text;
+      showSource(source);
+      return;
+    }
+
+    box.classList.add('is-typing');
+    var i = 0;
+    (function step() {
+      textEl.textContent = text.slice(0, i);
+      if (i < text.length) {
+        i += 1;
+        window.setTimeout(step, 28);
+      } else {
+        box.classList.remove('is-typing');
+        showSource(source);
+      }
+    })();
+  }
+
+  fetch(url, { headers: { Accept: 'application/json' } })
+    .then(function (res) {
+      if (!res.ok) throw new Error('bad status ' + res.status);
+      return res.json();
+    })
+    .then(function (data) {
+      var fact = data && typeof data.fact === 'string' ? data.fact.trim() : '';
+      var source =
+        data && typeof data.source === 'string' ? data.source.trim() : '';
+      if (fact) type(fact, source);
+    })
+    .catch(function () {
+      // Service unavailable: leave the line hidden, no harm done.
+    });
+})();

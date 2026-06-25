@@ -108,6 +108,17 @@ describe('renderHtml', () => {
     expect(html).toContain('<script src="./app.js" defer></script>');
   });
 
+  test('renders a hidden turtle-fact line wired to the facts endpoint', () => {
+    expect(html).toContain('class="turtle-fact"');
+    expect(html).toContain(
+      'data-facts-url="https://checkboxes.devinite.dev/facts/turtle"',
+    );
+    // Rendered hidden so it is pure progressive enhancement (revealed by app.js).
+    expect(html).toContain('aria-live="polite" hidden');
+    expect(html).toContain('class="turtle-fact-text"');
+    expect(html).toContain('class="turtle-fact-source"');
+  });
+
   test('renders dish details and a language badge', () => {
     expect(html).toContain('Zürcher Geschnetzeltes');
     expect(html).toContain('CHF 18.50');
