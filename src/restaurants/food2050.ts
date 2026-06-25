@@ -34,6 +34,25 @@ function stripControl(text: string): string {
   return text.replace(/[\u0000-\u001f]/g, '');
 }
 
+/** Lowercase letters only, for fuzzy comparison of glyph-corrupted labels. */
+function lettersOnly(text: string): string {
+  return text.toLowerCase().replace(/[^a-zà-ÿ]/g, '');
+}
+
+/**
+ * Whether `sub` is a subsequence of `full` (its characters appear in order,
+ * possibly with gaps). The header row of some food2050 PDFs uses a font whose
+ * lowercase "o" glyph is encoded as a control char and dropped, so "Montag"
+ * renders as "Mntag" — always a subsequence of the real weekday name.
+ */
+function isSubsequence(sub: string, full: string): boolean {
+  let i = 0;
+  for (const ch of full) {
+    if (i < sub.length && sub[i] === ch) i++;
+  }
+  return i === sub.length;
+}
+
 /** Weekday column index for a YYYY-MM-DD date: Monday → 0 … Sunday → 6. */
 function weekdayColumn(date: string): number {
   const day = new Date(`${date}T00:00:00Z`).getUTCDay();
@@ -71,8 +90,14 @@ function columnRanges(
 ): { ranges: Array<{ lo: number; hi: number }>; headerY: number } | undefined {
   const headers: TextItem[] = [];
   for (const stem of WEEKDAY_STEMS) {
-    const probe = stem.slice(0, 6);
-    const header = items.find((i) => stripControl(clean(i.str)).startsWith(probe));
+    const target = lettersOnly(stem);
+    // Match tolerant of dropped glyphs: the rendered label is a subsequence of
+    // the weekday name (see {@link isSubsequence}). Require at least 4 letters
+    // so a short body run can't be mistaken for a header.
+    const header = items.find((i) => {
+      const cand = lettersOnly(stripControl(clean(i.str)));
+      return cand.length >= 4 && isSubsequence(cand, target);
+    });
     if (!header) return undefined;
     headers.push(header);
   }

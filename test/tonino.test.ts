@@ -70,6 +70,32 @@ describe('parseFood2050Weekly (Bistro Tonino)', () => {
   });
 });
 
+describe('parseFood2050Weekly with glyph-corrupted headers', () => {
+  // Some live food2050 PDFs use a header font whose lowercase "o" glyph is a
+  // dropped control char, so "Montag"→"Mntag", "Mittwoch"→"Mittwch",
+  // "Donnerstag"→"Dnnerstag". The grid must still be located.
+  const corrupted = [
+    { x: 14, y: 753, w: 80, str: '22. bis 28.06.2026' },
+    { x: 45, y: 700, w: 40, str: 'Mntag' },
+    { x: 153, y: 700, w: 40, str: 'Dienstag' },
+    { x: 261, y: 700, w: 40, str: 'Mittwch' },
+    { x: 369, y: 700, w: 40, str: 'Dnnerstag' },
+    { x: 477, y: 700, w: 40, str: 'Freitag' },
+    { x: 23, y: 650, w: 40, str: 'Pasta Uno' },
+    { x: 51, y: 670, w: 60, str: 'TESTDISH, Tomatensugo' },
+    { x: 53, y: 600, w: 40, str: '9.50' },
+  ];
+
+  test('locates the grid despite missing letters in weekday labels', () => {
+    const day = parseFood2050Weekly(corrupted, MONDAY);
+    expect(day).toHaveLength(1);
+    expect(day[0]!.name).toBe('Pasta Uno: TESTDISH');
+    expect(day[0]!.description).toBe('Tomatensugo');
+    expect(day[0]!.price).toBe('9.50');
+  });
+});
+
+
 describe('parseFood2050WeekRange', () => {
   test('parses the week range from the PDF header', () => {
     expect(parseFood2050WeekRange(items)).toEqual({
