@@ -26,7 +26,7 @@ export const config: RestaurantConfig = {
   name: 'MIGORS Topolino',
   url: LANDING_URL,
   location: 'Pfingstweidstrasse 101, 8005 Zürich',
-  distances: { 'com-west': 'medium', westpark: 'far' },
+  distances: { 'com-west': 'far', westpark: 'medium' },
 };
 
 const WEEKDAYS = ['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag'] as const;
