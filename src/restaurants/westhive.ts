@@ -8,7 +8,7 @@ export const config: RestaurantConfig = {
   name: 'Westhive Kitchen',
   url: 'https://www.westhive.com/en/eat-drink/westhive-kitchen-zurich-hardturm/',
   location: 'Hardturmstrasse 161, 8005 Zürich',
-  distances: { 'com-west': 'near', westpark: 'medium' },
+  distances: { 'com-west': 'near', westpark: 'far' },
 };
 
 function clean(text: string): string {

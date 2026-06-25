@@ -16,7 +16,7 @@ export const config: RestaurantConfig = {
   name: 'Lunch 5',
   url: 'http://www.lunch-5.ch',
   location: 'Förrlibuckstrasse 62, 8005 Zürich',
-  distances: { 'com-west': 'medium', westpark: 'near' },
+  distances: { 'com-west': 'near', westpark: 'medium' },
 };
 
 const WEEKDAYS = ['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag'] as const;

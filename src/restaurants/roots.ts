@@ -7,7 +7,7 @@ export const config: RestaurantConfig = {
   id: 'roots-kitchen',
   name: 'Roots Kitchen',
   url: 'https://rootsandfriends.com/en/food/RootsKitchen/',
-  distances: { 'com-west': 'near', westpark: 'near' },
+  distances: { 'com-west': 'near', westpark: 'far' },
 };
 
 function clean(text: string): string {

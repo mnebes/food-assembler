@@ -19,7 +19,7 @@ const DISTANCE_ICON: Record<DistanceCategory, string> = {
 };
 
 const STATUS_LABEL: Record<MenuResult['status'], string> = {
-  ok: 'serving',
+  ok: 'open',
   'no-menu': 'idle',
   error: 'offline',
 };

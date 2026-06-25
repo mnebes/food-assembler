@@ -19,7 +19,7 @@ export const config: RestaurantConfig = {
   name: 'ZFV Technopark',
   url: 'https://www.zfv.ch/de/essen-gehen/gastronomie-im-technopark-zuerich#menu',
   location: 'Technoparkstrasse 1, 8005 Zürich',
-  distances: { 'com-west': 'far', westpark: 'medium' },
+  distances: { 'com-west': 'far', westpark: 'near' },
 };
 
 function clean(text: string): string {
