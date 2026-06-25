@@ -146,6 +146,54 @@ main {
   color: var(--ink);
 }
 
+/* ---------- Location toggle ---------- */
+
+.hq-toggle {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1.1rem;
+}
+
+.hq-toggle-label {
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+.hq-toggle-label::after {
+  content: " =";
+  color: var(--faint);
+}
+
+.hq-btn {
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--muted);
+  background: var(--card);
+  border: 1px solid var(--line-strong);
+  padding: 0.25rem 0.7rem;
+  cursor: pointer;
+  transition: color 0.12s, border-color 0.12s, background 0.12s;
+}
+
+.hq-btn:hover {
+  color: var(--pop);
+  border-color: var(--pop);
+}
+
+.hq-btn.is-active {
+  color: #fff;
+  background: var(--pop);
+  border-color: var(--pop);
+}
+
+.hq-btn:focus-visible {
+  outline: 2px solid var(--pop);
+  outline-offset: 2px;
+}
+
 /* ---------- Masonry of restaurants ---------- */
 
 .grid {
@@ -252,6 +300,11 @@ main {
   align-items: center;
   gap: 0.3rem;
   font-size: 0.76rem;
+}
+
+/* Hidden by the location toggle (overrides the inline-flex above). */
+.distances .distance[hidden] {
+  display: none;
 }
 
 .distance-icon {

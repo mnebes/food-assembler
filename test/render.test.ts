@@ -82,6 +82,32 @@ describe('renderHtml', () => {
     expect(html).toContain('a proper hike'); // far
   });
 
+  test('renders a location toggle with a button per HQ, first active', () => {
+    expect(html).toContain('class="hq-toggle"');
+    expect(html).toContain('data-hq="com-west"');
+    expect(html).toContain('data-hq="westpark"');
+    // The first HQ button is the default-active one.
+    expect(html).toContain(
+      '<button type="button" class="hq-btn is-active" data-hq="com-west" aria-pressed="true">com.West</button>',
+    );
+    expect(html).toContain(
+      '<button type="button" class="hq-btn" data-hq="westpark" aria-pressed="false">Westpark</button>',
+    );
+  });
+
+  test('tags distance chips and cards with HQ data for the toggle', () => {
+    // Each chip carries its HQ id so app.js can show only the selected one...
+    expect(html).toContain('class="distance" data-hq="com-west"');
+    expect(html).toContain('class="distance" data-hq="westpark"');
+    // ...and each card exposes per-HQ proximity ranks for closest-first sorting.
+    expect(html).toContain('data-rank-com-west="0"'); // westhive: near
+    expect(html).toContain('data-rank-westpark="1"'); // westhive: medium
+  });
+
+  test('loads the toggle script', () => {
+    expect(html).toContain('<script src="./app.js" defer></script>');
+  });
+
   test('renders dish details and a language badge', () => {
     expect(html).toContain('Zürcher Geschnetzeltes');
     expect(html).toContain('CHF 18.50');

@@ -18,6 +18,13 @@ const DISTANCE_ICON: Record<DistanceCategory, string> = {
   far: '🧗',
 };
 
+/** Proximity rank used for client-side "closest first" sorting (near = 0). */
+const DISTANCE_RANK: Record<DistanceCategory, number> = {
+  near: 0,
+  medium: 1,
+  far: 2,
+};
+
 const STATUS_LABEL: Record<MenuResult['status'], string> = {
   ok: 'open',
   'no-menu': 'idle',
@@ -53,13 +60,36 @@ function renderItem(item: MenuItem): string {
 function renderDistances(result: MenuResult): string {
   const chips = HQS.map((hq) => {
     const category = result.restaurant.distances[hq.id];
-    return `<span class="distance" data-distance="${escapeHtml(category)}">
+    return `<span class="distance" data-hq="${escapeHtml(hq.id)}" data-distance="${escapeHtml(category)}">
         <span class="distance-icon" aria-hidden="true">${DISTANCE_ICON[category]}</span>
         <span class="hq">${escapeHtml(hqName(hq.id))}</span>
         <span class="distance-word">${escapeHtml(distanceWording(category))}</span>
       </span>`;
   });
   return `<div class="distances">${chips.join('')}</div>`;
+}
+
+/** Per-HQ proximity ranks, emitted as data-attributes for client-side sorting. */
+function distanceRankAttrs(result: MenuResult): string {
+  return HQS.map(
+    (hq) => `data-rank-${escapeHtml(hq.id)}="${DISTANCE_RANK[result.restaurant.distances[hq.id]]}"`,
+  ).join(' ');
+}
+
+/**
+ * The location toggle. Lets the visitor pick which HQ the distances are shown
+ * for; the choice is synced to the `?hq=` query param by app.js so links are
+ * shareable. Without JS this is inert and every HQ's distance stays visible.
+ */
+function renderHqToggle(): string {
+  const buttons = HQS.map(
+    (hq, i) =>
+      `<button type="button" class="hq-btn${i === 0 ? ' is-active' : ''}" data-hq="${escapeHtml(hq.id)}" aria-pressed="${i === 0 ? 'true' : 'false'}">${escapeHtml(hq.name)}</button>`,
+  ).join('');
+  return `<div class="hq-toggle" role="group" aria-label="Your location">
+      <span class="hq-toggle-label" aria-hidden="true">📍 location</span>
+      ${buttons}
+    </div>`;
 }
 
 function renderBody(result: MenuResult): string {
@@ -82,7 +112,7 @@ function renderRestaurant(result: MenuResult): string {
   const badgeText =
     STATUS_LABEL[result.status] + (result.status === 'ok' ? ` · ${count}` : '');
   const statusBadge = `<span class="status-badge status-${escapeHtml(result.status)}"><span class="status-dot" aria-hidden="true"></span>${badgeText}</span>`;
-  return `<section class="restaurant restaurant-${escapeHtml(result.status)}">
+  return `<section class="restaurant restaurant-${escapeHtml(result.status)}" ${distanceRankAttrs(result)}>
       <header class="restaurant-head">
         <div class="restaurant-title">
           <h2>${name}</h2>
@@ -129,6 +159,7 @@ export function renderHtml(data: RawData): string {
         <span class="updated">last updated ${escapeHtml(updated)}</span>
       </div>
       ${stats}
+      ${renderHqToggle()}
     </header>
     <div class="grid">
       ${restaurants}
@@ -137,6 +168,7 @@ export function renderHtml(data: RawData): string {
       <p><code>assemble()</code> ran successfully · <a href="./data.json">raw data (JSON)</a></p>
     </footer>
   </main>
+  <script src="./app.js" defer></script>
 </body>
 </html>
 `;
