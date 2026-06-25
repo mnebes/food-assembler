@@ -5,6 +5,7 @@ import { crawler as zhdk } from './zhdk.ts';
 import { crawler as technopark } from './technopark.ts';
 import { crawler as tonino } from './tonino.ts';
 import { crawler as lunch5 } from './lunch5.ts';
+import { crawler as topolino } from './topolino.ts';
 
 /**
  * All active restaurant crawlers, in display order.
@@ -17,4 +18,5 @@ export const crawlers: readonly Crawler[] = [
   technopark,
   tonino,
   lunch5,
+  topolino,
 ];
