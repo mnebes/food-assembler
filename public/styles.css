@@ -218,8 +218,10 @@ main {
 /* ---------- Masonry of restaurants ---------- */
 
 .grid {
-  columns: 330px;
-  column-gap: 1rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
+  gap: 1rem;
+  align-items: start;
 }
 
 .restaurant {
@@ -227,8 +229,7 @@ main {
   background: var(--card);
   border: 1px solid var(--line-strong);
   padding: 1rem 1.1rem 1.15rem;
-  margin: 0 0 1rem;
-  break-inside: avoid;
+  margin: 0;
 }
 
 /* status marker: a short colour-coded bar, top-left */
@@ -239,11 +240,11 @@ main {
   left: -1px;
   width: 34px;
   height: 3px;
-  background: var(--accent);
+  background: var(--line-strong);
 }
 
 .restaurant-ok::before {
-  background: var(--accent);
+  background: var(--line-strong);
 }
 .restaurant-no-menu::before {
   background: var(--faint);
@@ -262,9 +263,10 @@ main {
 
 .restaurant-title h2 {
   margin: 0;
-  font-size: 1.05rem;
+  font-size: 1.18rem;
   font-weight: 700;
-  letter-spacing: -0.01em;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
 }
 
 .restaurant-title h2 a {
@@ -274,7 +276,7 @@ main {
 }
 
 .restaurant-title h2 a:hover {
-  border-bottom-color: var(--accent);
+  border-bottom-color: var(--ink);
 }
 
 /* ---------- Status badge ---------- */
@@ -296,7 +298,7 @@ main {
 }
 
 .status-ok {
-  color: var(--accent);
+  color: var(--muted);
 }
 .status-no-menu {
   color: var(--faint);
@@ -377,7 +379,7 @@ main {
 }
 
 .item {
-  padding: 0.55rem 0;
+  padding: 0.75rem 0;
   border-top: 1px dashed var(--line);
 }
 
@@ -409,6 +411,39 @@ main {
   margin: 0.2rem 0 0;
   font-size: 0.84rem;
   color: var(--muted);
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.item-desc.is-expanded {
+  -webkit-line-clamp: unset;
+  line-clamp: unset;
+  display: block;
+}
+
+.desc-toggle {
+  font: inherit;
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: var(--pop);
+  background: none;
+  border: none;
+  padding: 0.1rem 0;
+  margin-top: 0.1rem;
+  cursor: pointer;
+}
+
+.desc-toggle:hover {
+  text-decoration: underline;
+}
+
+.desc-toggle:focus-visible {
+  outline: 2px solid var(--pop);
+  outline-offset: 2px;
 }
 
 .item-meta {
@@ -474,6 +509,6 @@ main {
     padding: 1.5rem 0.9rem 2.5rem;
   }
   .grid {
-    columns: 1;
+    grid-template-columns: 1fr;
   }
 }

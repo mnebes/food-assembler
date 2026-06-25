@@ -75,4 +75,45 @@
   });
 
   apply(selected(), false);
+
+  // Tap/click-to-expand for descriptions that overflow their 3-line clamp.
+  // Works the same on desktop and touch (no hover dependency). Only descriptions
+  // that are actually truncated get a toggle; without JS they simply stay clamped.
+  var descs = Array.prototype.slice.call(
+    document.querySelectorAll('.item-desc'),
+  );
+
+  function isTruncated(el) {
+    return el.scrollHeight - el.clientHeight > 1;
+  }
+
+  descs.forEach(function (desc) {
+    var toggle = null;
+
+    function sync() {
+      var expanded = desc.classList.contains('is-expanded');
+      if (expanded) return;
+      if (isTruncated(desc)) {
+        if (!toggle) {
+          toggle = document.createElement('button');
+          toggle.type = 'button';
+          toggle.className = 'desc-toggle';
+          toggle.textContent = 'more';
+          toggle.setAttribute('aria-expanded', 'false');
+          toggle.addEventListener('click', function () {
+            var open = desc.classList.toggle('is-expanded');
+            toggle.textContent = open ? 'less' : 'more';
+            toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+          });
+          desc.parentNode.insertBefore(toggle, desc.nextSibling);
+        }
+        toggle.hidden = false;
+      } else if (toggle) {
+        toggle.hidden = true;
+      }
+    }
+
+    sync();
+    window.addEventListener('resize', sync);
+  });
 })();
