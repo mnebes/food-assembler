@@ -12,6 +12,12 @@
   --error-soft: #fbeae7;
   --line: #e7e9ec;
   --line-strong: #d7dbe0;
+  --dist-near: #1f9b57;
+  --dist-near-soft: #ebf7f0;
+  --dist-medium: #c77f1a;
+  --dist-medium-soft: #fbf1e2;
+  --dist-far: #d23b2b;
+  --dist-far-soft: #fbeae7;
   --mono: ui-monospace, "SFMono-Regular", "JetBrains Mono", "Fira Code", Menlo,
     Consolas, monospace;
 }
@@ -43,9 +49,7 @@ main {
 /* ---------- Header ---------- */
 
 .page-head {
-  margin-bottom: 1.75rem;
-  padding-bottom: 1.25rem;
-  border-bottom: 1px solid var(--line);
+  margin-bottom: 1.25rem;
 }
 
 .prompt {
@@ -86,6 +90,21 @@ main {
   font-size: clamp(1.7rem, 4vw, 2.4rem);
   font-weight: 700;
   letter-spacing: -0.01em;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.title-logo {
+  height: 1.2em;
+  width: auto;
+  vertical-align: middle;
+}
+
+@media (min-width: 768px) {
+  .title-logo {
+    height: 1.8em;
+  }
 }
 
 .page-meta {
@@ -153,7 +172,9 @@ main {
   flex-wrap: wrap;
   align-items: center;
   gap: 0.5rem;
-  margin-top: 1.1rem;
+  margin-bottom: 1.75rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid var(--line);
 }
 
 .hq-toggle-label {
@@ -300,6 +321,25 @@ main {
   align-items: center;
   gap: 0.3rem;
   font-size: 0.76rem;
+  padding: 0.12rem 0.5rem;
+  border-radius: 999px;
+  border: 1px solid var(--cat-color, var(--line-strong));
+  background: var(--cat-soft, transparent);
+}
+
+.distance[data-distance="near"] {
+  --cat-color: var(--dist-near);
+  --cat-soft: var(--dist-near-soft);
+}
+
+.distance[data-distance="medium"] {
+  --cat-color: var(--dist-medium);
+  --cat-soft: var(--dist-medium-soft);
+}
+
+.distance[data-distance="far"] {
+  --cat-color: var(--dist-far);
+  --cat-soft: var(--dist-far-soft);
 }
 
 /* Hidden by the location toggle (overrides the inline-flex above). */
@@ -324,7 +364,8 @@ main {
 }
 
 .distance-word {
-  color: var(--muted);
+  color: var(--cat-color, var(--muted));
+  font-weight: 600;
 }
 
 /* ---------- Items ---------- */

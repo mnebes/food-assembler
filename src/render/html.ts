@@ -153,14 +153,14 @@ export function renderHtml(data: RawData): string {
   <main>
     <header class="page-head">
       <p class="prompt"><span class="prompt-sigil">~/lunch&nbsp;$</span> ./assemble --today<span class="cursor" aria-hidden="true"></span></p>
-      <h1>🍽️ Today's Lunch</h1>
+      <h1><img class="title-logo" src="./logo.png" alt="" width="48" height="45" /> Today's Lunch</h1>
       <div class="page-meta">
         <span class="date" title="Europe/Zurich">${escapeHtml(data.date)}</span>
         <span class="updated">last updated ${escapeHtml(updated)}</span>
       </div>
       ${stats}
-      ${renderHqToggle()}
     </header>
+    ${renderHqToggle()}
     <div class="grid">
       ${restaurants}
     </div>
