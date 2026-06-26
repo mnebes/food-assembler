@@ -115,6 +115,15 @@ describe('renderHtml', () => {
     expect(html).toContain('<script src="./voting.js" defer></script>');
   });
 
+  test('wires TGIF party mode and loads its script', () => {
+    // Schedule config exposed on <body> so the markup is the single source of
+    // truth; the visitor's clock (or ?tgif) decides activation client-side.
+    expect(html).toContain('data-tgif-param="tgif"');
+    expect(html).toContain('data-tgif-day="5"'); // Friday
+    expect(html).toContain('data-tgif-from-hour="16"'); // 16:00
+    expect(html).toContain('<script src="./tgif.js" defer></script>');
+  });
+
   test('tags each dish with a stable vote key and a hidden vote control', () => {
     // Stable key derived from restaurant id + normalized dish name.
     expect(html).toContain(

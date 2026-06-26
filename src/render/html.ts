@@ -11,6 +11,19 @@ import { dishKey } from './dish-key.ts';
 const VOTES_PB_URL = 'https://checkboxes.devinite.dev';
 const VOTES_COLLECTION = 'lunch_votes';
 
+/**
+ * "TGIF" party-mode schedule. When the work week is essentially over — Friday
+ * (`getDay() === 5`) from 16:00 local time onward, so after the post-lunch lull
+ * — tgif.js overloads the page with celebratory beer. The window is emitted as
+ * `<body>` data-attributes so the markup is the single source of truth, and the
+ * effect can always be forced on/off via the `?tgif` query param regardless of
+ * the schedule (see tgif.js). The visitor's own clock decides, so the static
+ * page never needs rebuilding to start or stop the party.
+ */
+const TGIF_PARAM = 'tgif';
+const TGIF_DAY = 5; // Friday (0 = Sunday)
+const TGIF_FROM_HOUR = 16; // 16:00, i.e. after the lunch crowd has gone
+
 function escapeHtml(input: string): string {
   return input
     .replace(/&/g, '&amp;')
@@ -207,7 +220,7 @@ export function renderHtml(data: RawData): string {
   <title>Food Assembler — Lunch for ${escapeHtml(data.date)}</title>
   <link rel="stylesheet" href="./styles.css" />
 </head>
-<body data-day="${escapeHtml(data.date)}" data-pb-url="${escapeHtml(VOTES_PB_URL)}" data-votes-collection="${escapeHtml(VOTES_COLLECTION)}">
+<body data-day="${escapeHtml(data.date)}" data-pb-url="${escapeHtml(VOTES_PB_URL)}" data-votes-collection="${escapeHtml(VOTES_COLLECTION)}" data-tgif-param="${escapeHtml(TGIF_PARAM)}" data-tgif-day="${TGIF_DAY}" data-tgif-from-hour="${TGIF_FROM_HOUR}">
   <main>
     ${renderLunchFact()}
     <header class="page-head">
@@ -229,6 +242,7 @@ export function renderHtml(data: RawData): string {
   </main>
   <script src="./app.js" defer></script>
   <script src="./voting.js" defer></script>
+  <script src="./tgif.js" defer></script>
 </body>
 </html>
 `;

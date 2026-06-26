@@ -50,6 +50,27 @@ bunx playwright install chromium   # install the headless browser
 | `test/fixtures/`           | Saved HTML/PDF + expected parser results             |
 | `public/`                  | Generated output (`index.html`, `data.json`) + CSS   |
 
+### TGIF mode 🍺
+
+Once the work week is basically over — **Fridays from 16:00** (Europe/Zurich, the
+visitor's local clock), so after the post-lunch lull when the menu matters less —
+the page can transform into a bonkers, beer-soaked celebration: raining pints,
+drifting balloons, confetti, a disco marquee and a wobbling title.
+
+It is pure client-side garnish (`public/tgif.js` + styles in `styles.css`) and
+never touches the menu data:
+
+- **`?tgif`** (or `?tgif=1`/`on`/`party`) forces it **on** any day — handy for demos.
+- **`?tgif=0`** (or `off`/`false`) forces it **off**, muting the Friday auto-trigger.
+- With no param it follows the schedule above using the visitor's own clock, so
+  the static page never needs rebuilding to start or stop the party.
+
+The schedule (`data-tgif-day`, `data-tgif-from-hour`) is emitted on `<body>` so the
+markup stays the single source of truth. Celebration assets default to emoji
+(zero external requests); point `data-tgif-assets` at a JSON array of image/GIF
+URLs to rain real beer instead. The whole effect honours
+`prefers-reduced-motion` (banner only, no animation).
+
 ## Adding a restaurant
 
 Each restaurant is an isolated module under `src/restaurants/`. Adding one is a
