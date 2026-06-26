@@ -74,13 +74,19 @@ main {
 }
 
 .lunch-fact-cursor {
-  display: inline-block;
+  display: none;
   width: 0.5ch;
   height: 1em;
   margin-left: 0.15rem;
   background: var(--accent);
   vertical-align: text-bottom;
   animation: blink 1.1s steps(2, start) infinite;
+}
+
+/* The caret only exists while the fact is being typed out; once typing is
+   complete app.js drops `is-typing` and the caret disappears. */
+.lunch-fact.is-typing .lunch-fact-cursor {
+  display: inline-block;
 }
 
 .lunch-fact-source {
@@ -96,11 +102,6 @@ main {
 .lunch-fact-source::after {
   content: " ]";
   color: var(--faint);
-}
-
-/* While typing, keep the cursor solid; it blinks once the fact is complete. */
-.lunch-fact.is-typing .lunch-fact-cursor {
-  animation: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -126,25 +127,9 @@ main {
   font-weight: 700;
 }
 
-.cursor {
-  display: inline-block;
-  width: 0.6ch;
-  height: 1.05em;
-  margin-left: 0.1rem;
-  background: var(--accent);
-  vertical-align: text-bottom;
-  animation: blink 1.1s steps(2, start) infinite;
-}
-
 @keyframes blink {
   to {
     visibility: hidden;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .cursor {
-    animation: none;
   }
 }
 
