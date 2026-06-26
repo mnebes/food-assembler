@@ -8,12 +8,18 @@ export interface OrchestratorOptions {
   concurrency?: number;
   /** Per-restaurant timeout in milliseconds. */
   timeoutMs?: number;
+  /**
+   * Total attempts per restaurant before giving up. Crawls are flaky, so a
+   * result of 'no-menu' or 'error' triggers another attempt. Must be >= 1.
+   */
+  attempts?: number;
   /** Inject a browser (e.g. for testing). When omitted, Chromium is launched. */
   browser?: Browser;
 }
 
 const DEFAULT_CONCURRENCY = 3;
 const DEFAULT_TIMEOUT_MS = 45_000;
+const DEFAULT_ATTEMPTS = 2;
 
 interface Timeout {
   /** Rejects once the deadline passes. */
@@ -34,11 +40,11 @@ function timeout(ms: number): Timeout {
 }
 
 /**
- * Run a single crawler in its own browser context, always resolving to a
+ * Run a single crawl attempt in its own browser context, always resolving to a
  * MenuResult. Failures are captured as status 'error'; empty successful crawls
  * are normalized to 'no-menu'.
  */
-async function runCrawler(
+async function attemptCrawl(
   browser: Browser,
   crawler: Crawler,
   timeoutMs: number,
@@ -70,6 +76,25 @@ async function runCrawler(
 }
 
 /**
+ * Run a crawler, retrying when an attempt yields no usable menu. Crawls are
+ * flaky (a restaurant may transiently report no menu or fail to load), so we
+ * try again before settling for a 'no-menu'/'error' result. Returns as soon as
+ * an attempt succeeds, otherwise returns the last attempt's result.
+ */
+async function runCrawler(
+  browser: Browser,
+  crawler: Crawler,
+  timeoutMs: number,
+  attempts: number,
+): Promise<MenuResult> {
+  let result = await attemptCrawl(browser, crawler, timeoutMs);
+  for (let attempt = 1; attempt < attempts && result.status !== 'ok'; attempt++) {
+    result = await attemptCrawl(browser, crawler, timeoutMs);
+  }
+  return result;
+}
+
+/**
  * Crawl all restaurants and assemble today's RawData. Never throws as a result
  * of an individual crawler failing; the pipeline always produces output.
  */
@@ -79,13 +104,14 @@ export async function assembleMenus(
 ): Promise<RawData> {
   const concurrency = options.concurrency ?? DEFAULT_CONCURRENCY;
   const timeoutMs = options.timeoutMs ?? DEFAULT_TIMEOUT_MS;
+  const attempts = Math.max(1, options.attempts ?? DEFAULT_ATTEMPTS);
 
   const ownBrowser = options.browser === undefined;
   const browser = options.browser ?? (await chromium.launch({ headless: true }));
 
   try {
     const results = await mapWithConcurrency(crawlers, concurrency, (crawler) =>
-      runCrawler(browser, crawler, timeoutMs),
+      runCrawler(browser, crawler, timeoutMs, attempts),
     );
 
     return {

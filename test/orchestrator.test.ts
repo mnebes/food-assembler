@@ -70,8 +70,7 @@ describe('assembleMenus', () => {
     expect(data.results[0]!.error).toContain('timed out');
   });
 
-  test('results preserve crawler order and include date metadata', async () => {
-    const crawlers = [
+  test('results preserve crawler order and include date metadata', async () => {    const crawlers = [
       crawler('first', async () => [{ name: 'A', language: 'en' }]),
       crawler('second', async () => [{ name: 'B', language: 'en' }]),
     ];
@@ -79,5 +78,78 @@ describe('assembleMenus', () => {
     expect(data.results.map((r) => r.restaurant.id)).toEqual(['first', 'second']);
     expect(data.date).toMatch(/^\d{4}-\d{2}-\d{2}$/);
     expect(data.generatedAt).toMatch(/^\d{4}-\d{2}-\d{2}T/);
+  });
+
+  test('retries a flaky crawler that first returns no menu, then succeeds', async () => {
+    let calls = 0;
+    const crawlers = [
+      crawler('flaky', async () => {
+        calls++;
+        return calls === 1 ? [] : [{ name: 'Pasta', language: 'en' }];
+      }),
+    ];
+    const data = await assembleMenus(crawlers, { browser: fakeBrowser() });
+    expect(calls).toBe(2);
+    expect(data.results[0]!.status).toBe('ok');
+    expect(data.results[0]!.items).toHaveLength(1);
+  });
+
+  test('retries a crawler that first throws, then succeeds', async () => {
+    let calls = 0;
+    const crawlers = [
+      crawler('flaky', async () => {
+        calls++;
+        if (calls === 1) throw new Error('transient');
+        return [{ name: 'Salad', language: 'en' }];
+      }),
+    ];
+    const data = await assembleMenus(crawlers, { browser: fakeBrowser() });
+    expect(calls).toBe(2);
+    expect(data.results[0]!.status).toBe('ok');
+  });
+
+  test('gives up after the configured number of attempts', async () => {
+    let calls = 0;
+    const crawlers = [
+      crawler('always-empty', async () => {
+        calls++;
+        return [];
+      }),
+    ];
+    const data = await assembleMenus(crawlers, {
+      browser: fakeBrowser(),
+      attempts: 3,
+    });
+    expect(calls).toBe(3);
+    expect(data.results[0]!.status).toBe('no-menu');
+  });
+
+  test('attempts only once when attempts is 1', async () => {
+    let calls = 0;
+    const crawlers = [
+      crawler('empty', async () => {
+        calls++;
+        return [];
+      }),
+    ];
+    const data = await assembleMenus(crawlers, {
+      browser: fakeBrowser(),
+      attempts: 1,
+    });
+    expect(calls).toBe(1);
+    expect(data.results[0]!.status).toBe('no-menu');
+  });
+
+  test('does not retry a crawler that succeeds on the first attempt', async () => {
+    let calls = 0;
+    const crawlers = [
+      crawler('ok', async () => {
+        calls++;
+        return [{ name: 'Soup', language: 'en' }];
+      }),
+    ];
+    const data = await assembleMenus(crawlers, { browser: fakeBrowser() });
+    expect(calls).toBe(1);
+    expect(data.results[0]!.status).toBe('ok');
   });
 });
