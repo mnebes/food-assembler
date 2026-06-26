@@ -118,7 +118,7 @@
   });
 })();
 
-// Turtle fact, typed out live. Fetches a random fact from the
+// Lunch fact, typed out live. Fetches a random fact from the
 // "Facts-as-a-Service" endpoint and reveals it character by character at the
 // top of the page. Pure garnish and fully optional: the element is rendered
 // hidden server-side and only shown once a fact arrives, so a slow or down
@@ -126,16 +126,16 @@
 (function () {
   'use strict';
 
-  var box = document.querySelector('.turtle-fact');
+  var box = document.querySelector('.lunch-fact');
   if (!box) return;
 
   var url = box.getAttribute('data-facts-url');
   if (!url) return;
 
-  var textEl = box.querySelector('.turtle-fact-text');
+  var textEl = box.querySelector('.lunch-fact-text');
   if (!textEl) return;
 
-  var sourceEl = box.querySelector('.turtle-fact-source');
+  var sourceEl = box.querySelector('.lunch-fact-source');
 
   var reduceMotion =
     window.matchMedia &&

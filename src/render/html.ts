@@ -33,20 +33,20 @@ const STATUS_LABEL: Record<MenuResult['status'], string> = {
 
 /**
  * A small terminal-style line at the very top of the page that fetches a random
- * turtle fact from the "Facts-as-a-Service" endpoint and types it out live.
+ * lunch fact from the "Facts-as-a-Service" endpoint and types it out live.
  *
  * Progressive enhancement: it is rendered `hidden` and only revealed by app.js
  * once a fact has been fetched, so without JS (or if the service is down) the
  * page is unaffected. The endpoint is exposed as a data-attribute so the markup
  * stays the single source of truth for app.js.
  */
-const TURTLE_FACTS_URL = 'https://checkboxes.devinite.dev/facts/turtle';
+const LUNCH_FACTS_URL = 'https://checkboxes.devinite.dev/facts/lunch';
 
-function renderTurtleFact(): string {
-  return `<aside class="turtle-fact" data-facts-url="${escapeHtml(TURTLE_FACTS_URL)}" aria-live="polite" hidden>
-      <span class="turtle-fact-label" aria-hidden="true">🐢 turtle://fact</span>
-      <span class="turtle-fact-body"><span class="turtle-fact-text"></span><span class="turtle-fact-cursor" aria-hidden="true"></span></span>
-      <a class="turtle-fact-source" href="#" rel="noopener noreferrer" target="_blank" hidden>source</a>
+function renderLunchFact(): string {
+  return `<aside class="lunch-fact" data-facts-url="${escapeHtml(LUNCH_FACTS_URL)}" aria-live="polite" hidden>
+      <span class="lunch-fact-label" aria-hidden="true">🍽 lunch://fact</span>
+      <span class="lunch-fact-body"><span class="lunch-fact-text"></span><span class="lunch-fact-cursor" aria-hidden="true"></span></span>
+      <a class="lunch-fact-source" href="#" rel="noopener noreferrer" target="_blank" hidden>source</a>
     </aside>`;
 }
 
@@ -170,7 +170,7 @@ export function renderHtml(data: RawData): string {
 </head>
 <body>
   <main>
-    ${renderTurtleFact()}
+    ${renderLunchFact()}
     <header class="page-head">
       <p class="prompt"><span class="prompt-sigil">~/lunch&nbsp;$</span> ./assemble --today<span class="cursor" aria-hidden="true"></span></p>
       <h1><img class="title-logo" src="./logo.png" alt="" width="48" height="45" /> Today's Lunch</h1>

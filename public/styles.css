@@ -46,9 +46,9 @@ main {
   padding: 2rem 1.25rem 3.5rem;
 }
 
-/* ---------- Turtle fact (typed-live garnish) ---------- */
+/* ---------- Lunch fact (typed-live garnish) ---------- */
 
-.turtle-fact {
+.lunch-fact {
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
@@ -58,22 +58,22 @@ main {
   color: var(--muted);
 }
 
-.turtle-fact-label {
+.lunch-fact-label {
   color: var(--accent);
   font-weight: 700;
 }
 
-.turtle-fact-label::after {
+.lunch-fact-label::after {
   content: " >";
   color: var(--faint);
 }
 
-.turtle-fact-body {
+.lunch-fact-body {
   display: inline-flex;
   align-items: baseline;
 }
 
-.turtle-fact-cursor {
+.lunch-fact-cursor {
   display: inline-block;
   width: 0.5ch;
   height: 1em;
@@ -83,28 +83,28 @@ main {
   animation: blink 1.1s steps(2, start) infinite;
 }
 
-.turtle-fact-source {
+.lunch-fact-source {
   font-size: 0.74rem;
   color: var(--pop);
 }
 
-.turtle-fact-source::before {
+.lunch-fact-source::before {
   content: "[ ";
   color: var(--faint);
 }
 
-.turtle-fact-source::after {
+.lunch-fact-source::after {
   content: " ]";
   color: var(--faint);
 }
 
 /* While typing, keep the cursor solid; it blinks once the fact is complete. */
-.turtle-fact.is-typing .turtle-fact-cursor {
+.lunch-fact.is-typing .lunch-fact-cursor {
   animation: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .turtle-fact-cursor {
+  .lunch-fact-cursor {
     animation: none;
   }
 }
