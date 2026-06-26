@@ -1,6 +1,15 @@
 import type { DistanceCategory, Language, MenuItem, MenuResult, RawData } from '../types.ts';
 import { HQS, distanceWording, hqName } from '../hq.ts';
 import { nowInZurich } from '../util/date.ts';
+import { dishKey } from './dish-key.ts';
+
+/**
+ * PocketBase backend for lunch voting. The base URL and collection name are
+ * emitted as `<body>` data-attributes so the markup stays the single source of
+ * truth for the client (mirroring how the lunch-fact endpoint is wired).
+ */
+const VOTES_PB_URL = 'https://checkboxes.devinite.dev';
+const VOTES_COLLECTION = 'lunch_votes';
 
 function escapeHtml(input: string): string {
   return input
@@ -55,7 +64,13 @@ function languageBadge(language: Language): string {
   return `<span class="lang-badge" title="source language">${escapeHtml(language.toUpperCase())}</span>`;
 }
 
-function renderItem(item: MenuItem): string {
+/**
+ * Render a single dish. `dishId` is the stable, collision-resolved key used to
+ * attribute votes; it is emitted as `data-dish-key`. The vote control + count
+ * are rendered `hidden` and revealed by voting.js — pure progressive
+ * enhancement, so without JS (or PocketBase) the dish renders exactly as before.
+ */
+function renderItem(item: MenuItem, restaurantId: string, dishId: string): string {
   const parts: string[] = [];
   parts.push(
     `<div class="item-head"><span class="item-name">${escapeHtml(item.name)}</span>${languageBadge(item.language)}</div>`,
@@ -73,7 +88,13 @@ function renderItem(item: MenuItem): string {
     );
   }
   if (meta.length > 0) parts.push(`<div class="item-meta">${meta.join('')}</div>`);
-  return `<li class="item">${parts.join('')}</li>`;
+  parts.push(
+    `<div class="item-vote">
+        <button type="button" class="vote-btn" aria-pressed="false" hidden>I'm having this!</button>
+        <span class="vote-count" aria-live="polite" hidden></span>
+      </div>`,
+  );
+  return `<li class="item" data-restaurant-id="${escapeHtml(restaurantId)}" data-dish-key="${escapeHtml(dishId)}" data-dish-name="${escapeHtml(item.name)}">${parts.join('')}</li>`;
 }
 
 function renderDistances(result: MenuResult): string {
@@ -111,10 +132,28 @@ function renderHqToggle(): string {
     </div>`;
 }
 
+/**
+ * Render the dish list, assigning each item a stable vote key. Keys that
+ * collide within a restaurant (two dishes normalizing to the same slug) get a
+ * 1-based suffix so every `data-dish-key` on the page is unique.
+ */
+function renderItems(result: MenuResult): string {
+  const seen = new Map<string, number>();
+  const restaurantId = result.restaurant.id;
+  const items = result.items.map((item) => {
+    const base = dishKey(restaurantId, item.name);
+    const n = seen.get(base) ?? 0;
+    seen.set(base, n + 1);
+    const key = n === 0 ? base : `${base}-${n + 1}`;
+    return renderItem(item, restaurantId, key);
+  });
+  return `<ul class="items">${items.join('')}</ul>`;
+}
+
 function renderBody(result: MenuResult): string {
   switch (result.status) {
     case 'ok':
-      return `<ul class="items">${result.items.map(renderItem).join('')}</ul>`;
+      return renderItems(result);
     case 'no-menu':
       return `<p class="note note-no-menu"><span class="note-glyph" aria-hidden="true">// </span>No menu published today.</p>`;
     case 'error':
@@ -168,7 +207,7 @@ export function renderHtml(data: RawData): string {
   <title>Food Assembler — Lunch for ${escapeHtml(data.date)}</title>
   <link rel="stylesheet" href="./styles.css" />
 </head>
-<body>
+<body data-day="${escapeHtml(data.date)}" data-pb-url="${escapeHtml(VOTES_PB_URL)}" data-votes-collection="${escapeHtml(VOTES_COLLECTION)}">
   <main>
     ${renderLunchFact()}
     <header class="page-head">
@@ -189,6 +228,7 @@ export function renderHtml(data: RawData): string {
     </footer>
   </main>
   <script src="./app.js" defer></script>
+  <script src="./voting.js" defer></script>
 </body>
 </html>
 `;

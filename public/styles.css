@@ -518,6 +518,105 @@ main {
   color: var(--faint);
 }
 
+/* ---------- Voting ---------- */
+
+.item-vote {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem 0.75rem;
+  margin-top: 0.5rem;
+}
+
+/*
+ * The pick action reads as an interactive text affordance (like the "more"
+ * description toggle), deliberately *not* a pill, so it doesn't get confused
+ * with the non-clickable distance pills.
+ */
+.vote-btn {
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--pop);
+  background: none;
+  border: none;
+  padding: 0.05rem 0;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.vote-btn::before {
+  content: "+";
+  font-weight: 700;
+  color: var(--faint);
+}
+
+.vote-btn:hover {
+  text-decoration: underline;
+}
+
+.vote-btn:focus-visible {
+  outline: 2px solid var(--pop);
+  outline-offset: 2px;
+}
+
+.vote-btn.is-picked {
+  color: var(--accent);
+}
+
+.vote-btn.is-picked::before {
+  content: "✓";
+  color: var(--accent);
+}
+
+/* The current visitor's pick gets a quiet full-row highlight. */
+.item:has(.vote-btn.is-picked) {
+  background: var(--accent-soft);
+  box-shadow: inset 3px 0 0 var(--accent);
+  border-radius: 0 6px 6px 0;
+  margin: 0 -0.6rem;
+  padding-left: 0.6rem;
+  padding-right: 0.6rem;
+}
+
+/*
+ * The social-proof count is the prominent element: a filled accent chip with a
+ * bold number, so "others are having this" reads at a glance.
+ */
+.vote-count {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.3rem;
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: var(--accent);
+  background: var(--accent-soft);
+  border: 1px solid var(--accent);
+  border-radius: 999px;
+  padding: 0.1rem 0.55rem;
+  white-space: nowrap;
+}
+
+.vote-count-icon {
+  font-size: 0.8rem;
+}
+
+.vote-count-num {
+  font-size: 0.95rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+/* Restore `hidden` semantics overridden by the flex displays above, so the
+ * controls stay invisible until revealed by voting.js (progressive enhancement)
+ * and empty counts don't render an empty chip. */
+.vote-btn[hidden],
+.vote-count[hidden] {
+  display: none;
+}
+
 /* ---------- Notes (empty states) ---------- */
 
 .note {

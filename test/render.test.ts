@@ -108,6 +108,25 @@ describe('renderHtml', () => {
     expect(html).toContain('<script src="./app.js" defer></script>');
   });
 
+  test('wires the body to the PocketBase voting backend', () => {
+    expect(html).toContain('data-day="2024-06-15"');
+    expect(html).toContain('data-pb-url="https://checkboxes.devinite.dev"');
+    expect(html).toContain('data-votes-collection="lunch_votes"');
+    expect(html).toContain('<script src="./voting.js" defer></script>');
+  });
+
+  test('tags each dish with a stable vote key and a hidden vote control', () => {
+    // Stable key derived from restaurant id + normalized dish name.
+    expect(html).toContain(
+      'data-dish-key="westhive::zurcher-geschnetzeltes"',
+    );
+    expect(html).toContain('data-restaurant-id="westhive"');
+    expect(html).toContain('data-dish-name="Zürcher Geschnetzeltes"');
+    // Vote control rendered hidden (progressive enhancement, revealed by JS).
+    expect(html).toContain('class="vote-btn" aria-pressed="false" hidden');
+    expect(html).toContain('class="vote-count"');
+  });
+
   test('renders a hidden lunch-fact line wired to the facts endpoint', () => {
     expect(html).toContain('class="lunch-fact"');
     expect(html).toContain(
