@@ -122,7 +122,7 @@ for downstream consumers. It is the serialized `RawData` object
           "westpark": "medium"
         }
       },
-      "status": "ok",                     // "ok" | "no-menu" | "error"
+      "status": "ok",                     // "ok" | "no-menu" | "closed" | "error"
       "items": [                          // empty unless status === "ok"
         {
           "name": "Soup: Asparagus",      // dish name, source text as-is
@@ -142,7 +142,9 @@ for downstream consumers. It is the serialized `RawData` object
 Notes for consumers:
 - `results` preserves registry (display) order.
 - `status` is `ok` only when `items` is non-empty; an empty successful crawl is
-  normalized to `no-menu`.
+  normalized to `no-menu`. A crawl whose entire menu is just closed-markers
+  (e.g. every dish reads "geschlossen" during a summer break) is normalized to
+  `closed`. `items` is empty for every non-`ok` status.
 - Output is overwritten daily — there is no history (today only).
 
 ### Deployment

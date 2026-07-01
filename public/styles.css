@@ -297,6 +297,9 @@ main {
 .restaurant-no-menu::before {
   background: var(--faint);
 }
+.restaurant-closed::before {
+  background: var(--dist-medium);
+}
 .restaurant-error::before {
   background: var(--error);
 }
@@ -350,6 +353,9 @@ main {
 }
 .status-no-menu {
   color: var(--faint);
+}
+.status-closed {
+  color: var(--dist-medium);
 }
 .status-error {
   color: var(--error);
@@ -632,7 +638,9 @@ main {
 .note-no-menu {
   color: var(--muted);
 }
-
+.note-closed {
+  color: var(--dist-medium);
+}
 .note-error {
   color: var(--error);
 }

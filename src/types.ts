@@ -34,7 +34,7 @@ export interface RestaurantConfig {
   distances: Record<HqLocation, DistanceCategory>;
 }
 
-export type CrawlStatus = 'ok' | 'no-menu' | 'error';
+export type CrawlStatus = 'ok' | 'no-menu' | 'closed' | 'error';
 
 export interface MenuResult {
   restaurant: RestaurantConfig;

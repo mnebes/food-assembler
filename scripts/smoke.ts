@@ -17,7 +17,7 @@ import { assembleMenus } from '../src/orchestrator.ts';
 import { crawlers } from '../src/restaurants/registry.ts';
 import { todayInZurich, weekdayInZurich } from '../src/util/date.ts';
 
-const ICON = { ok: '✅', 'no-menu': '➖', error: '❌' } as const;
+const ICON = { ok: '✅', 'no-menu': '➖', closed: '🔒', error: '❌' } as const;
 
 const requested = process.argv.slice(2);
 const selected =
@@ -48,10 +48,13 @@ for (const r of data.results) {
       ? `${r.items.length} item(s)`
       : r.status === 'error'
         ? `error: ${r.error ?? 'unknown'}`
-        : 'no items returned';
+        : r.status === 'closed'
+          ? 'closed (not serving)'
+          : 'no items returned';
   console.log(`  ${ICON[r.status]} ${r.restaurant.id.padEnd(20)} ${detail}`);
 
-  if (r.status === 'ok') continue;
+  // A populated menu or a deliberate closure are both fine.
+  if (r.status === 'ok' || r.status === 'closed') continue;
   // On weekdays, anything other than a populated menu is suspicious (likely
   // layout drift or an outage). On weekends, empty menus are expected.
   if (!isWeekend) problems++;

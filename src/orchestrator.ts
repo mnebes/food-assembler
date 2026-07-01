@@ -2,6 +2,7 @@ import { chromium, type Browser, type BrowserContext } from 'playwright';
 import type { Crawler, MenuResult, RawData } from './types.ts';
 import { mapWithConcurrency } from './util/concurrency.ts';
 import { todayInZurich } from './util/date.ts';
+import { isClosedMenu } from './util/menu.ts';
 
 export interface OrchestratorOptions {
   /** Max number of crawlers running at once. */
@@ -42,7 +43,8 @@ function timeout(ms: number): Timeout {
 /**
  * Run a single crawl attempt in its own browser context, always resolving to a
  * MenuResult. Failures are captured as status 'error'; empty successful crawls
- * are normalized to 'no-menu'.
+ * are normalized to 'no-menu'; a menu that is entirely "geschlossen" markers is
+ * normalized to 'closed' (the venue publishes its grid but isn't serving).
  */
 async function attemptCrawl(
   browser: Browser,
@@ -59,6 +61,9 @@ async function attemptCrawl(
 
     if (items.length === 0) {
       return { restaurant: crawler.config, status: 'no-menu', items: [], crawledAt };
+    }
+    if (isClosedMenu(items)) {
+      return { restaurant: crawler.config, status: 'closed', items: [], crawledAt };
     }
     return { restaurant: crawler.config, status: 'ok', items, crawledAt };
   } catch (err) {
@@ -78,8 +83,9 @@ async function attemptCrawl(
 /**
  * Run a crawler, retrying when an attempt yields no usable menu. Crawls are
  * flaky (a restaurant may transiently report no menu or fail to load), so we
- * try again before settling for a 'no-menu'/'error' result. Returns as soon as
- * an attempt succeeds, otherwise returns the last attempt's result.
+ * try again before settling for a 'no-menu'/'error' result. An 'ok' or 'closed'
+ * result is definitive and returned immediately; otherwise we return the last
+ * attempt's result.
  */
 async function runCrawler(
   browser: Browser,
@@ -87,8 +93,10 @@ async function runCrawler(
   timeoutMs: number,
   attempts: number,
 ): Promise<MenuResult> {
+  const settled = (status: MenuResult['status']) =>
+    status === 'ok' || status === 'closed';
   let result = await attemptCrawl(browser, crawler, timeoutMs);
-  for (let attempt = 1; attempt < attempts && result.status !== 'ok'; attempt++) {
+  for (let attempt = 1; attempt < attempts && !settled(result.status); attempt++) {
     result = await attemptCrawl(browser, crawler, timeoutMs);
   }
   return result;

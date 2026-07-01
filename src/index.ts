@@ -6,7 +6,16 @@ import type { CrawlStatus, Crawler, MenuResult } from './types.ts';
 const OUT_DIR = 'public';
 
 function statusIcon(status: CrawlStatus): string {
-  return status === 'ok' ? '✅' : status === 'no-menu' ? '➖' : '❌';
+  switch (status) {
+    case 'ok':
+      return '✅';
+    case 'no-menu':
+      return '➖';
+    case 'closed':
+      return '🔒';
+    case 'error':
+      return '❌';
+  }
 }
 
 function statusLine(result: MenuResult): string {
@@ -18,7 +27,7 @@ function statusLine(result: MenuResult): string {
 function summaryLine(results: readonly MenuResult[]): string {
   const count = (status: CrawlStatus) =>
     results.filter((r) => r.status === status).length;
-  return `[food-assembler] summary: ${count('ok')} ok, ${count('no-menu')} no-menu, ${count('error')} error (of ${results.length})`;
+  return `[food-assembler] summary: ${count('ok')} ok, ${count('no-menu')} no-menu, ${count('closed')} closed, ${count('error')} error (of ${results.length})`;
 }
 
 async function build(): Promise<void> {

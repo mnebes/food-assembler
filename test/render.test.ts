@@ -162,6 +162,30 @@ describe('renderHtml', () => {
     expect(html).toContain('Menu unavailable today.');
   });
 
+  test('shows a distinct closed state', () => {
+    const closed: RawData = {
+      ...fixture,
+      results: [
+        {
+          restaurant: {
+            id: 'bistro-tonino',
+            name: 'Bistro Tonino',
+            url: 'https://example.com/tonino',
+            distances: { 'com-west': 'medium', westpark: 'far' },
+          },
+          status: 'closed',
+          crawledAt: '2024-06-15T06:00:00.000Z',
+          items: [],
+        },
+      ],
+    };
+    const out = renderHtml(closed);
+    expect(out).toContain('class="restaurant restaurant-closed"');
+    expect(out).toContain('status-closed');
+    expect(out).toContain('note-closed');
+    expect(out).toContain('Closed — no lunch service.');
+  });
+
   test('escapes HTML in source text', () => {
     const evil: RawData = {
       ...fixture,

@@ -106,7 +106,7 @@ interface RestaurantConfig {
   distances: Record<HqLocation, DistanceCategory>;
 }
 
-type CrawlStatus = 'ok' | 'no-menu' | 'error';
+type CrawlStatus = 'ok' | 'no-menu' | 'closed' | 'error';
 
 interface MenuResult {
   restaurant: RestaurantConfig;
@@ -147,6 +147,8 @@ interface Crawler {
   - `error` → restaurant still appears on the page with an **"unavailable today"** note.
   - `no-menu` → restaurant appears with a "no menu published today" note.
   - `ok` with empty items is treated as `no-menu`.
+  - `closed` → a menu whose every dish is just a closed-marker (e.g. "geschlossen"
+    during a summer break) is treated as `closed` and shown with a "closed" note.
 - Crawls run with limited concurrency (e.g. 2–3 at a time) to bound resource use.
 - The build **always succeeds** as long as the pipeline runs, even if every crawler fails.
 

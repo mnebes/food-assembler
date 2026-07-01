@@ -58,6 +58,7 @@ const DISTANCE_RANK: Record<DistanceCategory, number> = {
 const STATUS_LABEL: Record<MenuResult['status'], string> = {
   ok: 'open',
   'no-menu': 'idle',
+  closed: 'closed',
   error: 'offline',
 };
 
@@ -177,6 +178,8 @@ function renderBody(result: MenuResult): string {
       return renderItems(result);
     case 'no-menu':
       return `<p class="note note-no-menu"><span class="note-glyph" aria-hidden="true">// </span>No menu published today.</p>`;
+    case 'closed':
+      return `<p class="note note-closed"><span class="note-glyph" aria-hidden="true">🔒 </span>Closed — no lunch service.</p>`;
     case 'error':
       return `<p class="note note-error"><span class="note-glyph" aria-hidden="true">⚠ </span>Menu unavailable today.</p>`;
   }

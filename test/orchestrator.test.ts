@@ -45,6 +45,48 @@ describe('assembleMenus', () => {
     expect(data.results[0]!.status).toBe('no-menu');
   });
 
+  test("a menu that is entirely 'geschlossen' is normalized to 'closed'", async () => {
+    const crawlers = [
+      crawler('tonino', async () => [
+        { name: 'Pasta Uno: geschlossen', language: 'de' },
+        { name: 'Casa: Geschlossen', language: 'de' },
+        { name: 'Pinsa: geschlossen', language: 'de' },
+      ]),
+    ];
+    const data = await assembleMenus(crawlers, { browser: fakeBrowser() });
+    expect(data.results[0]!.status).toBe('closed');
+    // Closed results carry no items (like every non-ok status).
+    expect(data.results[0]!.items).toHaveLength(0);
+  });
+
+  test("a mixed menu with real dishes stays 'ok'", async () => {
+    const crawlers = [
+      crawler('mixed', async () => [
+        { name: 'Pasta Uno: geschlossen', language: 'de' },
+        { name: 'Casa: Panzanella', language: 'de' },
+      ]),
+    ];
+    const data = await assembleMenus(crawlers, { browser: fakeBrowser() });
+    expect(data.results[0]!.status).toBe('ok');
+    expect(data.results[0]!.items).toHaveLength(2);
+  });
+
+  test("'closed' is definitive and is not retried", async () => {
+    let calls = 0;
+    const crawlers = [
+      crawler('closed', async () => {
+        calls++;
+        return [{ name: 'Casa: geschlossen', language: 'de' }];
+      }),
+    ];
+    const data = await assembleMenus(crawlers, {
+      browser: fakeBrowser(),
+      attempts: 3,
+    });
+    expect(calls).toBe(1);
+    expect(data.results[0]!.status).toBe('closed');
+  });
+
   test("a throwing crawler yields status 'error' and does not break others", async () => {
     const crawlers = [
       crawler('boom', async () => {
