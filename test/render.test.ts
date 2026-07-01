@@ -121,6 +121,10 @@ describe('renderHtml', () => {
     expect(html).toContain('data-tgif-param="tgif"');
     expect(html).toContain('data-tgif-day="5"'); // Friday
     expect(html).toContain('data-tgif-from-hour="16"'); // 16:00
+    // Easter egg: 16:00–18:00 Europe/Zurich, any day.
+    expect(html).toContain('data-tgif-tz="Europe/Zurich"');
+    expect(html).toContain('data-tgif-egg-from-hour="16"');
+    expect(html).toContain('data-tgif-egg-to-hour="18"');
     expect(html).toContain('<script src="./tgif.js" defer></script>');
   });
 

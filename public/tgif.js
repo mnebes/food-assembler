@@ -6,8 +6,12 @@
 // Activation, in priority order:
 //   1. `?tgif`  / `?tgif=1|on|true|party`  -> force ON  (works any day, for demos)
 //      `?tgif=0|off|false`                 -> force OFF (mutes the auto-trigger)
-//   2. otherwise auto-ON when it's the configured day (Friday) at/after the
-//      configured hour (16:00), using the visitor's local clock.
+//   2. otherwise auto-ON when either:
+//        a. it's the configured day (Friday) at/after the configured hour
+//           (16:00), using the visitor's local clock; or
+//        b. (easter egg) it's between 16:00 and 18:00 in Europe/Zurich on ANY
+//           day — measured in Zurich time via Intl, so it fires no matter where
+//           the visitor's own clock is set.
 //
 // Pure progressive enhancement: the page is fully usable without this script and
 // nothing here touches the menu data. All config lives on <body data-tgif-*> so
@@ -26,6 +30,12 @@
   var PARAM = body.getAttribute('data-tgif-param') || 'tgif';
   var DAY = toInt(body.getAttribute('data-tgif-day'), 5); // 0=Sun … 5=Fri
   var FROM_HOUR = toInt(body.getAttribute('data-tgif-from-hour'), 16); // 16:00
+
+  // Easter-egg window, measured in a fixed timezone (Zurich) rather than the
+  // visitor's local clock.
+  var TZ = body.getAttribute('data-tgif-tz') || 'Europe/Zurich';
+  var EGG_FROM = toInt(body.getAttribute('data-tgif-egg-from-hour'), 16); // 16:00
+  var EGG_TO = toInt(body.getAttribute('data-tgif-egg-to-hour'), 18); // 18:00 (exclusive)
 
   // Celebration glyphs. Heavy on beer, as requested — the pints are repeated so
   // they dominate the pour and don't get drowned out by the other party emoji.
@@ -70,10 +80,35 @@
     return now.getDay() === DAY && now.getHours() >= FROM_HOUR;
   }
 
+  // Current hour (0–23) in the configured timezone, independent of the visitor's
+  // own clock — so the 16:00–18:00 easter egg fires on Zurich time worldwide.
+  // Falls back to the local hour if Intl/timezone data is unavailable.
+  function hourInTz(tz) {
+    try {
+      var parts = new Intl.DateTimeFormat('en-GB', {
+        timeZone: tz,
+        hour: '2-digit',
+        hour12: false,
+      }).formatToParts(new Date());
+      for (var i = 0; i < parts.length; i++) {
+        if (parts[i].type === 'hour') return parseInt(parts[i].value, 10) % 24;
+      }
+    } catch (e) {
+      // Unknown timezone or no Intl support: fall through to local time.
+    }
+    return new Date().getHours();
+  }
+
+  // Easter egg: any day, when it's late afternoon (16:00–18:00) in Zurich.
+  function eggActive() {
+    var h = hourInTz(TZ);
+    return h >= EGG_FROM && h < EGG_TO;
+  }
+
   function shouldActivate() {
     var override = paramOverride();
     if (override !== null) return override;
-    return scheduledOn(new Date());
+    return scheduledOn(new Date()) || eggActive();
   }
 
   // --- DOM helpers ---------------------------------------------------------

@@ -14,15 +14,23 @@ const VOTES_COLLECTION = 'lunch_votes';
 /**
  * "TGIF" party-mode schedule. When the work week is essentially over — Friday
  * (`getDay() === 5`) from 16:00 local time onward, so after the post-lunch lull
- * — tgif.js overloads the page with celebratory beer. The window is emitted as
- * `<body>` data-attributes so the markup is the single source of truth, and the
- * effect can always be forced on/off via the `?tgif` query param regardless of
- * the schedule (see tgif.js). The visitor's own clock decides, so the static
- * page never needs rebuilding to start or stop the party.
+ * — tgif.js overloads the page with celebratory beer. On top of that there's a
+ * daily **easter egg**: any day the page is visited between 16:00 and 18:00
+ * *Europe/Zurich* time (computed via `Intl`, so it fires on Zurich time no
+ * matter where the visitor's clock is set), the party kicks in too.
+ *
+ * The window is emitted as `<body>` data-attributes so the markup is the single
+ * source of truth, and the effect can always be forced on/off via the `?tgif`
+ * query param regardless of the schedule (see tgif.js). The visitor's own clock
+ * decides the Friday trigger, so the static page never needs rebuilding to start
+ * or stop the party.
  */
 const TGIF_PARAM = 'tgif';
 const TGIF_DAY = 5; // Friday (0 = Sunday)
 const TGIF_FROM_HOUR = 16; // 16:00, i.e. after the lunch crowd has gone
+const TGIF_TZ = 'Europe/Zurich'; // timezone the easter-egg window is measured in
+const TGIF_EGG_FROM_HOUR = 16; // easter egg: any day from 16:00…
+const TGIF_EGG_TO_HOUR = 18; // …until 18:00 (exclusive), Europe/Zurich
 
 function escapeHtml(input: string): string {
   return input
@@ -220,7 +228,7 @@ export function renderHtml(data: RawData): string {
   <title>Food Assembler — Lunch for ${escapeHtml(data.date)}</title>
   <link rel="stylesheet" href="./styles.css" />
 </head>
-<body data-day="${escapeHtml(data.date)}" data-pb-url="${escapeHtml(VOTES_PB_URL)}" data-votes-collection="${escapeHtml(VOTES_COLLECTION)}" data-tgif-param="${escapeHtml(TGIF_PARAM)}" data-tgif-day="${TGIF_DAY}" data-tgif-from-hour="${TGIF_FROM_HOUR}">
+<body data-day="${escapeHtml(data.date)}" data-pb-url="${escapeHtml(VOTES_PB_URL)}" data-votes-collection="${escapeHtml(VOTES_COLLECTION)}" data-tgif-param="${escapeHtml(TGIF_PARAM)}" data-tgif-day="${TGIF_DAY}" data-tgif-from-hour="${TGIF_FROM_HOUR}" data-tgif-tz="${escapeHtml(TGIF_TZ)}" data-tgif-egg-from-hour="${TGIF_EGG_FROM_HOUR}" data-tgif-egg-to-hour="${TGIF_EGG_TO_HOUR}">
   <main>
     ${renderLunchFact()}
     <header class="page-head">

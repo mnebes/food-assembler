@@ -55,20 +55,24 @@ bunx playwright install chromium   # install the headless browser
 Once the work week is basically over — **Fridays from 16:00** (Europe/Zurich, the
 visitor's local clock), so after the post-lunch lull when the menu matters less —
 the page can transform into a bonkers, beer-soaked celebration: raining pints,
-drifting balloons, confetti, a disco marquee and a wobbling title.
+drifting balloons, confetti, a disco marquee and a wobbling title. As an **easter
+egg** it also fires on **any day between 16:00 and 18:00 Europe/Zurich time**
+(measured in Zurich time regardless of the visitor's own clock).
 
 It is pure client-side garnish (`public/tgif.js` + styles in `styles.css`) and
 never touches the menu data:
 
 - **`?tgif`** (or `?tgif=1`/`on`/`party`) forces it **on** any day — handy for demos.
-- **`?tgif=0`** (or `off`/`false`) forces it **off**, muting the Friday auto-trigger.
-- With no param it follows the schedule above using the visitor's own clock, so
-  the static page never needs rebuilding to start or stop the party.
+- **`?tgif=0`** (or `off`/`false`) forces it **off**, muting both auto-triggers.
+- With no param it follows the schedule above (Friday, visitor's local clock) or
+  the 16:00–18:00 Zurich easter-egg window, so the static page never needs
+  rebuilding to start or stop the party.
 
-The schedule (`data-tgif-day`, `data-tgif-from-hour`) is emitted on `<body>` so the
-markup stays the single source of truth. Celebration assets default to emoji
-(zero external requests); point `data-tgif-assets` at a JSON array of image/GIF
-URLs to rain real beer instead. The whole effect honours
+The schedule (`data-tgif-day`, `data-tgif-from-hour`) and easter-egg window
+(`data-tgif-tz`, `data-tgif-egg-from-hour`, `data-tgif-egg-to-hour`) are emitted
+on `<body>` so the markup stays the single source of truth. Celebration assets
+default to emoji (zero external requests); point `data-tgif-assets` at a JSON
+array of image/GIF URLs to rain real beer instead. The whole effect honours
 `prefers-reduced-motion` (banner only, no animation).
 
 ## Adding a restaurant
