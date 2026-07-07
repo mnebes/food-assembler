@@ -10,7 +10,7 @@ name: Daily menu build
 #   only (lunch menus aren't published on weekends).
 on:
   schedule:
-    - cron: '0 5 * * 1-5'
+    - cron: '0 3 * * 1-5'
   workflow_dispatch:
 
 # Allow the workflow to publish to GitHub Pages.
