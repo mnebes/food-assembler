@@ -9,7 +9,7 @@ How it works:
 - The raw data is also exposed in a json file via github pages
 
 example lunch locations:
-- https://www.westhive.com/en/eat-drink/westhive-kitchen-zurich-hardturm/
+- https://www.westhive.com/de/eat-drink/westhive-kitchen-zuerich-hardturm/
 - https://rootsandfriends.com/en/food/RootsKitchen/
 - https://www.zhdk.ch/campustoniareal/gastronomie
 - https://www.zfv.ch/de/essen-gehen/gastronomie-im-technopark-zuerich#menu
@@ -125,11 +125,11 @@ for downstream consumers. It is the serialized `RawData` object
       "status": "ok",                     // "ok" | "no-menu" | "closed" | "error"
       "items": [                          // empty unless status === "ok"
         {
-          "name": "Soup: Asparagus",      // dish name, source text as-is
+          "name": "Suppe: Rübli-Ingwer",  // dish name, source text as-is
           "description": "…",            // optional
           "price": "7.00 / 11.50",        // optional, raw string
           "tags": ["vegetarian"],         // optional
-          "language": "en"               // "de" | "en" | "unknown"
+          "language": "de"               // "de" | "en" | "unknown"
         }
       ],
       "error": "…",                       // present only when status === "error"

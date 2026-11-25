@@ -193,7 +193,7 @@ Output is overwritten on every run (today-only, no history).
 ## 11. Initial Restaurants (v1)
 
 From the README:
-1. Westhive Kitchen Zurich Hardturm — https://www.westhive.com/en/eat-drink/westhive-kitchen-zurich-hardturm/
+1. Westhive Kitchen Zurich Hardturm — https://www.westhive.com/de/eat-drink/westhive-kitchen-zuerich-hardturm/
 2. Roots Kitchen — https://rootsandfriends.com/en/food/RootsKitchen/
 3. ZHdK Campus Toni-Areal gastronomy — https://www.zhdk.ch/campustoniareal/gastronomie
 4. ZFV Technopark Zürich — https://www.zfv.ch/de/essen-gehen/gastronomie-im-technopark-zuerich#menu

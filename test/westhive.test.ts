@@ -6,30 +6,19 @@ const html = await Bun.file(
 ).text();
 
 describe('parseWesthive', () => {
-  const items = parseWesthive(html);
-
-  test('extracts at least one item', () => {
-    expect(items.length).toBeGreaterThan(0);
-  });
-
-  test("includes today's daily lunch dish with a price", () => {
-    const today = items.find((i) =>
-      i.name.includes('Grilled chicken thigh steaks with tomato salsa'),
-    );
-    expect(today).toBeDefined();
-    expect(today!.price).toBe('19.90');
-    expect(today!.language).toBe('en');
-  });
-
-  test('does not include other days from the daily lunch menu', () => {
-    const otherDay = items.find((i) => i.name.includes('Veal escalope'));
-    expect(otherDay).toBeUndefined();
-  });
-
-  test('includes weekly specials prefixed by category', () => {
-    const soup = items.find((i) => i.name === 'Soup: Asparagus');
-    expect(soup).toBeDefined();
-    expect(soup!.price).toBe('7.00 / 11.50');
+  test("extracts only today's lunch and weekly specials in German", () => {
+    expect(parseWesthive(html)).toEqual([
+      {
+        name: 'Geschmortes Rindsgulasch mit Sauerrahm, Serviettenknödel & Ofenkürbis',
+        price: '19.90',
+        language: 'de',
+      },
+      {
+        name: 'Suppe: Rübli-Ingwer',
+        price: '7.00 / 11.50',
+        language: 'de',
+      },
+    ]);
   });
 
   test('returns no items for an empty page', () => {
@@ -38,8 +27,7 @@ describe('parseWesthive', () => {
 });
 
 describe('westhive config', () => {
-  test('has distances for both HQs', () => {
-    expect(config.distances['com-west']).toBeDefined();
-    expect(config.distances.westpark).toBeDefined();
+  test('uses the German menu URL', () => {
+    expect(config.url).toBe('https://www.westhive.com/de/eat-drink/westhive-kitchen-zuerich-hardturm/');
   });
 });

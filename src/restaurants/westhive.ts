@@ -6,7 +6,7 @@ import type { Crawler, MenuItem, RestaurantConfig } from '../types.ts';
 export const config: RestaurantConfig = {
   id: 'westhive-hardturm',
   name: 'Westhive Kitchen',
-  url: 'https://www.westhive.com/en/eat-drink/westhive-kitchen-zurich-hardturm/',
+  url: 'https://www.westhive.com/de/eat-drink/westhive-kitchen-zuerich-hardturm/',
   location: 'Hardturmstrasse 161, 8005 Zürich',
   distances: { 'com-west': 'near', westpark: 'far' },
 };
@@ -29,7 +29,7 @@ function readOffer(
 
   const item: MenuItem = {
     name: namePrefix ? `${namePrefix}: ${title}` : title,
-    language: 'en',
+    language: 'de',
   };
   if (description) item.description = description;
   if (price) item.price = price;
@@ -50,7 +50,7 @@ export function parseWesthive(html: string): MenuItem[] {
     if (item) items.push(item);
   });
 
-  // Weekly Specials section: each offer's line-1 is a category (Soup, Pasta, ...).
+  // The German page still uses “Weekly Specials”. Each offer's first line is its category.
   $('h2.brxe-heading').each((_, heading) => {
     if (clean($(heading).text()).toLowerCase() !== 'weekly specials') return;
     const section = $(heading).parent();
